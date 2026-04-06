@@ -92,15 +92,26 @@
       }
 
       updateFirebaseStatus(true);
+      if(window._resolveFirebaseData) window._resolveFirebaseData(true);
       return true;
     } catch(e) {
       console.error('Firebase load error:', e);
       updateFirebaseStatus(false);
+      if(window._resolveFirebaseData) window._resolveFirebaseData(false);
       return false;
     }
   })();
 
   window._firebaseReady = true;
+</script>
+<script>
+// Pre-create a promise that module will resolve — so initApp() can always await it
+// This fixes the race condition between type="module" (deferred) and regular scripts
+(function() {
+  let _resolve;
+  window._firebaseDataPromise = new Promise(function(resolve) { _resolve = resolve; });
+  window._resolveFirebaseData = _resolve;
+})();
 </script>
 <style>
 :root {
@@ -5090,26 +5101,29 @@ async function initApp() {
   applyTheme();
   updateJsonStatusPill();
 
-  // Wait for Firebase data to be ready
-  if(window._firebaseLoadPromise) {
-    try {
-      await window._firebaseLoadPromise;
-      // Apply Firebase data to db and nextId
-      if(window._firebase_db) {
-        db = {...db, ...window._firebase_db};
-        if(!db.recycleBin) db.recycleBin = [];
-        window.db = db;
-      }
-      if(window._firebase_nextId) {
-        nextId = {...nextId, ...window._firebase_nextId};
-        window.nextId = nextId;
-      }
-      if(window._firebase_db) showToast('☁️ Data loaded from Firebase!');
-    } catch(e) {
-      console.error('Firebase wait error:', e);
-      loadData(); // fallback to localStorage
+  // Wait for Firebase data — _firebaseDataPromise is always created before module loads
+  try {
+    const waitPromise = window._firebaseDataPromise || window._firebaseLoadPromise;
+    if(waitPromise) {
+      await Promise.race([
+        waitPromise,
+        new Promise(r => setTimeout(r, 8000)) // 8s timeout fallback
+      ]);
     }
-  } else {
+    // Apply Firebase data to db and nextId
+    if(window._firebase_db) {
+      db = {...db, ...window._firebase_db};
+      if(!db.recycleBin) db.recycleBin = [];
+      window.db = db;
+    }
+    if(window._firebase_nextId) {
+      nextId = {...nextId, ...window._firebase_nextId};
+      window.nextId = nextId;
+    }
+    if(window._firebase_db) showToast('☁️ Data loaded from Firebase!');
+    else loadData();
+  } catch(e) {
+    console.error('Firebase wait error:', e);
     loadData();
   }
 
