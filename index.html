@@ -24,54 +24,15 @@
   const app = initializeApp(firebaseConfig);
   const firestore = getFirestore(app);
 
-  // Expose to global scope
-  window._firestore = firestore;
-  window._fbDoc = doc;
-  window._fbSetDoc = setDoc;
-  window._fbGetDoc = getDoc;
-// Load all data from Firebase — returns promise
-  window.loadFromFirebase = async function() {
-    try {
-      const [snap, settingsSnap] = await Promise.all([
-        getDoc(doc(firestore, 'tracker', 'main')),
-        getDoc(doc(firestore, 'tracker', 'settings'))
-      ]);
-
-      if (snap.exists()) {
-        const d = snap.data();
-        if (d.db) {
-          db = {...db, ...d.db};
-          if(!db.recycleBin) db.recycleBin = [];
-          window.db = db;
-        }
-        if (d.nextId) {
-          nextId = {...nextId, ...d.nextId};
-          window.nextId = nextId;
-        }
-        console.log('✅ Firebase: Data loaded');
-      }
-
-      if (settingsSnap.exists()) {
-        const s = settingsSnap.data();
-        if (s.password) {
-          window._firebase_password = s.password;
-          console.log('✅ Firebase: Password loaded');
-        }
-      }
-
-      updateFirebaseStatus(true);
-      return true;
-    } catch(e) {
-      console.error('Firebase load error:', e);
-      updateFirebaseStatus(false);
-      return false;
-    }
-  };
-
-  window._firebaseReady = true;
+  function updateFirebaseStatus(ok) {
+    const el = document.getElementById('firebase-status');
+    if(el) el.innerHTML = ok
+      ? '<span style="color:#3a9b5c;font-weight:700;">🟢 Firebase Connected</span><br><span style="color:var(--muted2);font-size:0.72rem;">Cloud sync ON — data is being saved.</span>'
+      : '<span style="color:#d94f3d;font-weight:700;">🔴 Firebase Error</span><br><span style="color:var(--muted2);font-size:0.72rem;">Please check your internet connection.</span>';
+  }
+  window.updateFirebaseStatus = updateFirebaseStatus;
 
   window.saveToFirebase = async function() {
-    if(!window._firebaseReady) return;
     try {
       await setDoc(doc(firestore, 'tracker', 'main'), {
         db: window.db,
@@ -88,9 +49,7 @@
     }
   };
 
-  // Save password to Firebase
   window.savePasswordToFirebase = async function(newPassword) {
-    if(!window._firebaseReady) return;
     try {
       await setDoc(doc(firestore, 'tracker', 'settings'), {
         password: newPassword,
@@ -104,13 +63,44 @@
     }
   };
 
-  function updateFirebaseStatus(ok) {
-    const el = document.getElementById('firebase-status');
-    if(el) el.innerHTML = ok
-      ? '<span style="color:#3a9b5c;font-weight:700;">🟢 Firebase Connected</span><br><span style="color:var(--muted2);font-size:0.72rem;">Cloud sync ON — data is being saved.</span>'
-      : '<span style="color:#d94f3d;font-weight:700;">🔴 Firebase Error</span><br><span style="color:var(--muted2);font-size:0.72rem;">Please check your internet connection.</span>';
-  }
-  window.updateFirebaseStatus = updateFirebaseStatus;
+  // Load data from Firebase IMMEDIATELY and resolve a promise
+  // This lets initApp() wait for Firebase even though this is a module script
+  window._firebaseLoadPromise = (async function() {
+    try {
+      const [snap, settingsSnap] = await Promise.all([
+        getDoc(doc(firestore, 'tracker', 'main')),
+        getDoc(doc(firestore, 'tracker', 'settings'))
+      ]);
+
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.db) {
+          window._firebase_db = d.db;
+        }
+        if (d.nextId) {
+          window._firebase_nextId = d.nextId;
+        }
+        console.log('✅ Firebase: Data ready');
+      }
+
+      if (settingsSnap.exists()) {
+        const s = settingsSnap.data();
+        if (s.password) {
+          window._firebase_password = s.password;
+          console.log('✅ Firebase: Password ready');
+        }
+      }
+
+      updateFirebaseStatus(true);
+      return true;
+    } catch(e) {
+      console.error('Firebase load error:', e);
+      updateFirebaseStatus(false);
+      return false;
+    }
+  })();
+
+  window._firebaseReady = true;
 </script>
 <style>
 :root {
@@ -1577,10 +1567,13 @@ let jsonFileName   = null;   // display name
 let jsonConnected  = false;  // derived from jsonFileHandle
 
 function saveData() {
+  // Keep window.db and window.nextId in sync
+  window.db = db;
+  window.nextId = nextId;
   // Always keep a session backup in localStorage
   localStorage.setItem('babyTracker_session', JSON.stringify({db, nextId}));
   updateJsonStatusPill();
-  // Auto-save to Firebase Cloud
+  // Auto-save to Firebase Cloud (debounced 1.5s)
   if(window.saveToFirebase) {
     clearTimeout(window._fbSaveTimer);
     window._fbSaveTimer = setTimeout(() => window.saveToFirebase(), 1500);
@@ -5063,14 +5056,30 @@ function buildTabExcel(tab) {
 async function initApp() {
   applyTheme();
   updateJsonStatusPill();
-  // Load from Firebase first, then render
-  if(window.loadFromFirebase) {
-    showToast('☁️ Loading data from Firebase...');
-    await window.loadFromFirebase();
-    showToast('✅ Data loaded successfully!');
+
+  // Wait for Firebase data to be ready
+  if(window._firebaseLoadPromise) {
+    try {
+      await window._firebaseLoadPromise;
+      // Apply Firebase data to db and nextId
+      if(window._firebase_db) {
+        db = {...db, ...window._firebase_db};
+        if(!db.recycleBin) db.recycleBin = [];
+        window.db = db;
+      }
+      if(window._firebase_nextId) {
+        nextId = {...nextId, ...window._firebase_nextId};
+        window.nextId = nextId;
+      }
+      if(window._firebase_db) showToast('☁️ Data loaded from Firebase!');
+    } catch(e) {
+      console.error('Firebase wait error:', e);
+      loadData(); // fallback to localStorage
+    }
   } else {
     loadData();
   }
+
   refreshAllViews();
   updateSettingsDbStatus();
 }
