@@ -1591,7 +1591,15 @@ function saveData() {
 
 function loadData() {
   try {
-    // Load from session backup (localStorage) — used when no file connected
+    // If Firebase already loaded data, use that (highest priority)
+    if(window._firebase_db) {
+      db = {...db, ...window._firebase_db};
+      if(!db.recycleBin) db.recycleBin = [];
+      if(window._firebase_nextId) nextId = {...nextId, ...window._firebase_nextId};
+      window.db = db; window.nextId = nextId;
+      return;
+    }
+    // Fallback: Load from session backup (localStorage)
     const raw = localStorage.getItem('babyTracker_session');
     if(!raw) return;
     const d = JSON.parse(raw);
@@ -3400,6 +3408,7 @@ async function connectJSONFile(e) {
         if(d.db){ db = {...db,...d.db}; if(!db.recycleBin) db.recycleBin=[]; }
         if(d.nextId) nextId = {...nextId,...d.nextId};
         jsonFileName = file.name; jsonConnected = true;
+        window.db = db; window.nextId = nextId;
         saveData(); refreshAllViews(); updateJsonStatusPill(); updateJsonPanelUI(); hideJsonPanel();
         showToast('✅ Connected: ' + file.name + ' — Auto-saving enabled!');
       } catch(err) { showToast('❌ File load failed: ' + err.message); }
@@ -3448,7 +3457,11 @@ function disconnectJSON() {
   updateJsonStatusPill();
   updateJsonPanelUI();
   hideJsonPanel();
-  showToast('🔌 Disconnected. Connect a file again to resume auto-save.');
+  // Keep db data in memory and re-save to Firebase
+  window.db = db;
+  window.nextId = nextId;
+  if(window.saveToFirebase) window.saveToFirebase();
+  showToast('🔌 JSON disconnected. Firebase sync continues.');
 }
 
 function saveAndDownloadJSON() {
