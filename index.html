@@ -31,9 +31,10 @@
   window._fbGetDoc = getDoc;
   window._firebaseReady = true;
 
-  // Auto-load data from Firebase on startup
+  // Auto-load data + password from Firebase on startup
   window.addEventListener('load', async () => {
     try {
+      // Load main data
       const snap = await getDoc(doc(firestore, 'tracker', 'main'));
       if (snap.exists()) {
         const d = snap.data();
@@ -51,6 +52,16 @@
       } else {
         console.log('Firebase: No data yet, starting fresh');
         updateFirebaseStatus(true);
+      }
+
+      // Load password from Firebase settings
+      const settingsSnap = await getDoc(doc(firestore, 'tracker', 'settings'));
+      if (settingsSnap.exists()) {
+        const s = settingsSnap.data();
+        if (s.password) {
+          window._firebase_password = s.password;
+          console.log('✅ Firebase: Password loaded');
+        }
       }
     } catch(e) {
       console.error('Firebase load error:', e);
@@ -73,6 +84,22 @@
       console.error('Firebase save error:', e);
       updateFirebaseStatus(false);
       if(typeof showToast === 'function') showToast('❌ Firebase save failed: ' + e.message);
+    }
+  };
+
+  // Save password to Firebase
+  window.savePasswordToFirebase = async function(newPassword) {
+    if(!window._firebaseReady) return;
+    try {
+      await setDoc(doc(firestore, 'tracker', 'settings'), {
+        password: newPassword,
+        updatedAt: new Date().toISOString()
+      });
+      window._firebase_password = newPassword;
+      console.log('✅ Firebase: Password saved');
+    } catch(e) {
+      console.error('Firebase password save error:', e);
+      if(typeof showToast === 'function') showToast('❌ Password Firebase me save nahi hua: ' + e.message);
     }
   };
 
@@ -3316,7 +3343,8 @@ function applyTheme() {
 const DEFAULT_PASSWORD = 'admin123';
 
 function getSavedPassword() {
-  return localStorage.getItem('babyTracker_pwd') || DEFAULT_PASSWORD;
+  // Firebase password takes priority, then localStorage, then default
+  return window._firebase_password || localStorage.getItem('babyTracker_pwd') || DEFAULT_PASSWORD;
 }
 function checkLogin() {
   const loggedIn = sessionStorage.getItem('babyTracker_auth') === '1';
@@ -3353,10 +3381,14 @@ function changePassword() {
   if(np.length < 4) { msg.style.color='var(--red)'; msg.textContent='❌ Minimum 4 characters chahiye.'; return; }
   if(np !== cp) { msg.style.color='var(--red)'; msg.textContent='❌ Dono password match nahi kar rahe.'; return; }
   localStorage.setItem('babyTracker_pwd', np);
+  // Save to Firebase so all devices get updated password
+  if(window.savePasswordToFirebase) {
+    window.savePasswordToFirebase(np);
+  }
   document.getElementById('newPwdInput').value = '';
   document.getElementById('confirmPwdInput').value = '';
   msg.style.color = 'var(--green)';
-  msg.textContent = '✅ Password changed!';
+  msg.textContent = '✅ Password changed! Sab devices pe update hoga.';
   setTimeout(() => msg.textContent='', 3000);
 }
 
