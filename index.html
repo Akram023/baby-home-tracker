@@ -6,6 +6,84 @@
 <title>Baby & Home Expense Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDvvd7nTJxJ18mr22TcIc2cOtkcJ8DotO8",
+    authDomain: "baby-home-tracker.firebaseapp.com",
+    projectId: "baby-home-tracker",
+    storageBucket: "baby-home-tracker.firebasestorage.app",
+    messagingSenderId: "647207431090",
+    appId: "1:647207431090:web:9abe32d59ff1144b7992ab",
+    measurementId: "G-M32L40B4PV"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const firestore = getFirestore(app);
+
+  // Expose to global scope
+  window._firestore = firestore;
+  window._fbDoc = doc;
+  window._fbSetDoc = setDoc;
+  window._fbGetDoc = getDoc;
+  window._firebaseReady = true;
+
+  // Auto-load data from Firebase on startup
+  window.addEventListener('load', async () => {
+    try {
+      const snap = await getDoc(doc(firestore, 'tracker', 'main'));
+      if (snap.exists()) {
+        const d = snap.data();
+        if (d.db) { window._db_from_firebase = d.db; }
+        if (d.nextId) { window._nextId_from_firebase = d.nextId; }
+        window._firebase_loaded = true;
+        if(typeof refreshAllViews === 'function') {
+          if(d.db) { db = {...db, ...d.db}; if(!db.recycleBin) db.recycleBin=[]; }
+          if(d.nextId) nextId = {...nextId, ...d.nextId};
+          refreshAllViews();
+        }
+        console.log('✅ Firebase: Data loaded');
+        if(typeof showToast === 'function') showToast('☁️ Firebase se data load hua!');
+        updateFirebaseStatus(true);
+      } else {
+        console.log('Firebase: No data yet, starting fresh');
+        updateFirebaseStatus(true);
+      }
+    } catch(e) {
+      console.error('Firebase load error:', e);
+      updateFirebaseStatus(false);
+    }
+  });
+
+  window.saveToFirebase = async function() {
+    if(!window._firebaseReady) return;
+    try {
+      await setDoc(doc(firestore, 'tracker', 'main'), {
+        db: window.db,
+        nextId: window.nextId,
+        version: '2.0',
+        updatedAt: new Date().toISOString()
+      });
+      console.log('✅ Firebase: Saved');
+      updateFirebaseStatus(true);
+    } catch(e) {
+      console.error('Firebase save error:', e);
+      updateFirebaseStatus(false);
+      if(typeof showToast === 'function') showToast('❌ Firebase save failed: ' + e.message);
+    }
+  };
+
+  function updateFirebaseStatus(ok) {
+    const el = document.getElementById('firebase-status');
+    if(el) el.innerHTML = ok
+      ? '<span style="color:#3a9b5c;font-weight:700;">🟢 Firebase Connected</span><br><span style="color:var(--muted2);font-size:0.72rem;">Cloud sync ON — data save ho raha hai.</span>'
+      : '<span style="color:#d94f3d;font-weight:700;">🔴 Firebase Error</span><br><span style="color:var(--muted2);font-size:0.72rem;">Internet check karo.</span>';
+  }
+  window.updateFirebaseStatus = updateFirebaseStatus;
+</script>
 <style>
 :root {
   --bg: #fef9f4;
@@ -1323,9 +1401,16 @@ select.finput { cursor: pointer; }
   <div style="max-width:520px;margin:0 auto;padding:24px 16px;">
     <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;margin-bottom:20px;">⚙️ Settings</div>
 
+    <!-- Firebase Cloud Section -->
+    <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">☁️ Firebase Cloud Sync</div>
+      <div id="firebase-status" style="font-size:0.85rem;color:var(--muted2);margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">⏳ Connecting to Firebase...</div>
+      <button onclick="if(window.saveToFirebase){window.saveToFirebase();showToast('☁️ Firebase me save ho raha hai...');}" class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;">☁️ Abhi Firebase me Save Karo</button>
+    </div>
+
     <!-- Database Section -->
     <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
-      <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">🗄️ Database / JSON File</div>
+      <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">🗄️ Database / JSON File (Optional)</div>
       <div id="settings-db-status" style="font-size:0.85rem;color:var(--muted2);margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">Loading...</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button onclick="connectJSONFile()" class="btn btn-green" style="flex:1;justify-content:center;padding:10px;">🔗 Connect JSON File</button>
@@ -1446,6 +1531,9 @@ let db = {
   recycleBin: []  // ♻️ Recycle Bin — har delete se pehle yahan save hoga
 };
 let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1 };
+// Expose to global for Firebase module
+window.db = db;
+window.nextId = nextId;
 let editId = { baby:null, rent:null, family:null };
 let currentFamilyType = 'send';
 let selectedReport = 'summary';
@@ -1464,6 +1552,11 @@ function saveData() {
   // Always keep a session backup in localStorage
   localStorage.setItem('babyTracker_session', JSON.stringify({db, nextId}));
   updateJsonStatusPill();
+  // Auto-save to Firebase Cloud
+  if(window.saveToFirebase) {
+    clearTimeout(window._fbSaveTimer);
+    window._fbSaveTimer = setTimeout(() => window.saveToFirebase(), 1500);
+  }
   // Auto-save to connected JSON file
   if(jsonFileHandle) {
     jsonFileHandle.requestPermission({mode:'readwrite'}).then(ok => {
