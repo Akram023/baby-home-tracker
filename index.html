@@ -29,33 +29,28 @@
   window._fbDoc = doc;
   window._fbSetDoc = setDoc;
   window._fbGetDoc = getDoc;
-  window._firebaseReady = true;
-
-  // Auto-load data + password from Firebase on startup
-  window.addEventListener('load', async () => {
+// Load all data from Firebase — returns promise
+  window.loadFromFirebase = async function() {
     try {
-      // Load main data
-      const snap = await getDoc(doc(firestore, 'tracker', 'main'));
+      const [snap, settingsSnap] = await Promise.all([
+        getDoc(doc(firestore, 'tracker', 'main')),
+        getDoc(doc(firestore, 'tracker', 'settings'))
+      ]);
+
       if (snap.exists()) {
         const d = snap.data();
-        if (d.db) { window._db_from_firebase = d.db; }
-        if (d.nextId) { window._nextId_from_firebase = d.nextId; }
-        window._firebase_loaded = true;
-        if(typeof refreshAllViews === 'function') {
-          if(d.db) { db = {...db, ...d.db}; if(!db.recycleBin) db.recycleBin=[]; }
-          if(d.nextId) nextId = {...nextId, ...d.nextId};
-          refreshAllViews();
+        if (d.db) {
+          db = {...db, ...d.db};
+          if(!db.recycleBin) db.recycleBin = [];
+          window.db = db;
+        }
+        if (d.nextId) {
+          nextId = {...nextId, ...d.nextId};
+          window.nextId = nextId;
         }
         console.log('✅ Firebase: Data loaded');
-        if(typeof showToast === 'function') showToast('☁️ Firebase se data load hua!');
-        updateFirebaseStatus(true);
-      } else {
-        console.log('Firebase: No data yet, starting fresh');
-        updateFirebaseStatus(true);
       }
 
-      // Load password from Firebase settings
-      const settingsSnap = await getDoc(doc(firestore, 'tracker', 'settings'));
       if (settingsSnap.exists()) {
         const s = settingsSnap.data();
         if (s.password) {
@@ -63,11 +58,17 @@
           console.log('✅ Firebase: Password loaded');
         }
       }
+
+      updateFirebaseStatus(true);
+      return true;
     } catch(e) {
       console.error('Firebase load error:', e);
       updateFirebaseStatus(false);
+      return false;
     }
-  });
+  };
+
+  window._firebaseReady = true;
 
   window.saveToFirebase = async function() {
     if(!window._firebaseReady) return;
@@ -99,15 +100,15 @@
       console.log('✅ Firebase: Password saved');
     } catch(e) {
       console.error('Firebase password save error:', e);
-      if(typeof showToast === 'function') showToast('❌ Password Firebase me save nahi hua: ' + e.message);
+      if(typeof showToast === 'function') showToast('❌ Password could not be saved to Firebase: ' + e.message);
     }
   };
 
   function updateFirebaseStatus(ok) {
     const el = document.getElementById('firebase-status');
     if(el) el.innerHTML = ok
-      ? '<span style="color:#3a9b5c;font-weight:700;">🟢 Firebase Connected</span><br><span style="color:var(--muted2);font-size:0.72rem;">Cloud sync ON — data save ho raha hai.</span>'
-      : '<span style="color:#d94f3d;font-weight:700;">🔴 Firebase Error</span><br><span style="color:var(--muted2);font-size:0.72rem;">Internet check karo.</span>';
+      ? '<span style="color:#3a9b5c;font-weight:700;">🟢 Firebase Connected</span><br><span style="color:var(--muted2);font-size:0.72rem;">Cloud sync ON — data is being saved.</span>'
+      : '<span style="color:#d94f3d;font-weight:700;">🔴 Firebase Error</span><br><span style="color:var(--muted2);font-size:0.72rem;">Please check your internet connection.</span>';
   }
   window.updateFirebaseStatus = updateFirebaseStatus;
 </script>
@@ -1005,7 +1006,7 @@ select.finput { cursor: pointer; }
     </div>
     <div class="modal-body">
       <div style="background:rgba(109,191,138,0.08);border:1px solid rgba(109,191,138,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:0.8rem;color:var(--muted);">
-        Ghar lene ke waqt jo ek baar security/deposit diya uska record. Yeh rent se alag hota hai.
+        Record of the one-time security deposit paid when renting. This is separate from monthly rent.
       </div>
       <div class="form-grid">
         <div class="form-group">
@@ -1392,12 +1393,12 @@ select.finput { cursor: pointer; }
       <button class="modal-close" onclick="document.getElementById('clearAllModal').classList.remove('open')">✕</button>
     </div>
     <div class="modal-body">
-      <p style="color:var(--muted);font-size:0.85rem;line-height:1.6;">Yeh action <b style="color:var(--red);">saara data permanent delete</b> kar dega — Baby expenses, Rent, Family, Panchayat, Loans sab. Undo nahi hoga.</p>
-      <p style="margin-top:12px;font-size:0.82rem;color:var(--muted2);">Pehle Backup le lena better hoga. Aage badhna hai?</p>
+      <p style="color:var(--muted);font-size:0.85rem;line-height:1.6;">This action will <b style="color:var(--red);">permanently delete all data</b> — Baby expenses, Rent, Family, Panchayat, Loans and everything. This cannot be undone.</p>
+      <p style="margin-top:12px;font-size:0.82rem;color:var(--muted2);">It is recommended to take a backup first. Do you want to proceed?</p>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="document.getElementById('clearAllModal').classList.remove('open')">Cancel</button>
-      <button class="btn btn-red" onclick="executeClearAll()">🗑️ Haan, Sab Delete Karo</button>
+      <button class="btn btn-red" onclick="executeClearAll()">🗑️ Yes, Delete Everything</button>
     </div>
   </div>
 </div>
@@ -1432,7 +1433,7 @@ select.finput { cursor: pointer; }
     <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
       <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">☁️ Firebase Cloud Sync</div>
       <div id="firebase-status" style="font-size:0.85rem;color:var(--muted2);margin-bottom:14px;padding:10px 14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border);">⏳ Connecting to Firebase...</div>
-      <button onclick="if(window.saveToFirebase){window.saveToFirebase();showToast('☁️ Firebase me save ho raha hai...');}" class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;">☁️ Abhi Firebase me Save Karo</button>
+      <button onclick="if(window.saveToFirebase){window.saveToFirebase();showToast('☁️ Saving to Firebase...');}" class="btn btn-primary" style="width:100%;justify-content:center;padding:10px;">☁️ Save to Firebase Now</button>
     </div>
 
     <!-- Database Section -->
@@ -1533,8 +1534,8 @@ select.finput { cursor: pointer; }
   <div id="recycle-list">
     <div style="text-align:center;padding:60px 20px;color:var(--muted2);">
       <div style="font-size:3rem;margin-bottom:12px;">🗑️</div>
-      <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">Recycle Bin khaali hai</div>
-      <div style="font-size:0.8rem;">Jab kuch delete hoga, yahan aayega.</div>
+      <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">Recycle Bin is empty</div>
+      <div style="font-size:0.8rem;">Deleted items will appear here.</div>
     </div>
   </div>
 </div>
@@ -1555,7 +1556,7 @@ let db = {
   ccExpenses: [],       // 💎 Per-card expenses
   familySettings: null,
   deposit: null,
-  recycleBin: []  // ♻️ Recycle Bin — har delete se pehle yahan save hoga
+  recycleBin: []  // ♻️ Recycle Bin — saved here before every delete
 };
 let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1 };
 // Expose to global for Firebase module
@@ -3377,9 +3378,9 @@ function changePassword() {
   const np = document.getElementById('newPwdInput')?.value.trim();
   const cp = document.getElementById('confirmPwdInput')?.value.trim();
   const msg = document.getElementById('pwd-msg');
-  if(!np) { msg.style.color='var(--red)'; msg.textContent='❌ Password empty nahi ho sakta.'; return; }
-  if(np.length < 4) { msg.style.color='var(--red)'; msg.textContent='❌ Minimum 4 characters chahiye.'; return; }
-  if(np !== cp) { msg.style.color='var(--red)'; msg.textContent='❌ Dono password match nahi kar rahe.'; return; }
+  if(!np) { msg.style.color='var(--red)'; msg.textContent='❌ Password cannot be empty.'; return; }
+  if(np.length < 4) { msg.style.color='var(--red)'; msg.textContent='❌ Minimum 4 characters required.'; return; }
+  if(np !== cp) { msg.style.color='var(--red)'; msg.textContent='❌ Passwords do not match.'; return; }
   localStorage.setItem('babyTracker_pwd', np);
   // Save to Firebase so all devices get updated password
   if(window.savePasswordToFirebase) {
@@ -3388,7 +3389,7 @@ function changePassword() {
   document.getElementById('newPwdInput').value = '';
   document.getElementById('confirmPwdInput').value = '';
   msg.style.color = 'var(--green)';
-  msg.textContent = '✅ Password changed! Sab devices pe update hoga.';
+  msg.textContent = '✅ Password changed! Will update on all devices.';
   setTimeout(() => msg.textContent='', 3000);
 }
 
@@ -3588,7 +3589,7 @@ function calcBulkRentPending(el) {
 
 function saveBulkRent() {
   const rows = document.querySelectorAll('#bulk-rent-rows tr');
-  if(!rows.length) { showToast('❌ Koi row nahi!'); return; }
+  if(!rows.length) { showToast('❌ No rows found!'); return; }
   let added = 0, skipped = 0;
   rows.forEach(tr => {
     const month   = tr.querySelector('.brent-month')?.value;
@@ -3652,7 +3653,7 @@ function saveCcCard() {
 
 // ── Expense Modal ─────────────────────
 function openCcExpenseModal(cardId, editExpId) {
-  if(!db.creditCards || !db.creditCards.length) { showToast('❌ Pehle ek card add karo!'); openAddCardModal(); return; }
+  if(!db.creditCards || !db.creditCards.length) { showToast('❌ Please add a card first!'); openAddCardModal(); return; }
   if(!db.ccExpenses) db.ccExpenses = [];
   const exp = editExpId ? db.ccExpenses.find(e=>e.id===editExpId) : null;
   const sel = document.getElementById('ccexp-card');
@@ -3849,7 +3850,7 @@ function openCcViewModal(cardId) {
     </div>`;
   }).join('');
 
-  if(!months.length) rows = `<div style="text-align:center;padding:30px;color:var(--muted);">Koi expense nahi</div>`;
+  if(!months.length) rows = `<div style="text-align:center;padding:30px;color:var(--muted);">No expenses found</div>`;
 
   const vm = document.getElementById('ccViewModal');
   document.getElementById('ccViewTitle').textContent = '💎 ' + card.name;
@@ -3955,7 +3956,7 @@ function renderCcReport() {
         </div>
       </div>
     </div>
-    ${!exps.length ? `<div style="text-align:center;padding:30px;color:var(--muted);">Is month koi expense nahi</div>` : `
+    ${!exps.length ? `<div style="text-align:center;padding:30px;color:var(--muted);">No expenses this month</div>` : `
     <div style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;">Card-wise Breakdown</div>
     ${cardRows}
     <div style="font-size:0.8rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px;">Category-wise</div>
@@ -4060,8 +4061,8 @@ function renderCreditCards() {
     container.innerHTML = `
       <div style="text-align:center;padding:48px 20px;color:var(--muted);">
         <div style="font-size:3rem;margin-bottom:12px;">💎</div>
-        <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">Koi card nahi hai</div>
-        <div style="font-size:0.85rem;margin-bottom:16px;">Apna pehla credit card add karo</div>
+        <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">No cards added</div>
+        <div style="font-size:0.85rem;margin-bottom:16px;">Add your first credit card</div>
         <button class="btn btn-primary" onclick="openAddCardModal()">＋ Add Card</button>
       </div>`;
     return;
@@ -4123,7 +4124,7 @@ function renderCreditCards() {
             <button class="btn btn-primary btn-sm" onclick="openCcExpenseModal('${card.id}')">＋ Add</button>
           </div>
         </div>
-        ${recent.length===0 ? `<div style="text-align:center;padding:14px;color:var(--muted);font-size:0.83rem;">Koi expense nahi — add karo!</div>` :
+        ${recent.length===0 ? `<div style="text-align:center;padding:14px;color:var(--muted);font-size:0.83rem;">No expenses yet — add one!</div>` :
           recent.map(e=>`
           <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.83rem;">
             <div>
@@ -4183,8 +4184,8 @@ function renderRecycleBin() {
   if(!bin.length) {
     listEl.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--muted2);">
       <div style="font-size:3rem;margin-bottom:12px;">🗑️</div>
-      <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">Recycle Bin khaali hai</div>
-      <div style="font-size:0.8rem;">Jab kuch delete hoga, yahan aayega.</div>
+      <div style="font-size:1rem;font-weight:600;margin-bottom:6px;">Recycle Bin is empty</div>
+      <div style="font-size:0.8rem;">Deleted items will appear here.</div>
     </div>`;
     return;
   }
@@ -4321,7 +4322,7 @@ function restoreRecycleItem(recycleId) {
     db.recycleBin.splice(idx, 1);
     saveData();
     renderRecycleBin();
-    showToast('✅ Item restore ho gaya!');
+    showToast('✅ Item restored successfully!');
   } catch(err) {
     showToast('❌ Restore failed: ' + err.message);
   }
@@ -4335,12 +4336,12 @@ function permanentDeleteRecycleItem(recycleId) {
 }
 
 function emptyRecycleBin() {
-  if(!(db.recycleBin||[]).length) { showToast('Recycle Bin already khaali hai!'); return; }
+  if(!(db.recycleBin||[]).length) { showToast('Recycle Bin is already empty!'); return; }
   if(!confirm('Recycle Bin ke saare items permanently delete ho jayenge. Sure ho?')) return;
   db.recycleBin = [];
   saveData();
   renderRecycleBin();
-  showToast('🗑️ Recycle Bin empty ho gaya!');
+  showToast('🗑️ Recycle Bin cleared!');
 }
 
 // ═══════════════════════════════════════
@@ -4436,7 +4437,7 @@ function updateBulkTotal() {
 
 function saveBulkEntries() {
   const rows = document.querySelectorAll('#bulk-rows tr');
-  if(!rows.length) { showToast('❌ Koi row nahi!'); return; }
+  if(!rows.length) { showToast('❌ No rows found!'); return; }
   let added = 0, skipped = 0;
   const grouped = {};
 
@@ -5059,13 +5060,19 @@ function buildTabExcel(tab) {
 // ═══════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════
-function initApp() {
-  loadData();
+async function initApp() {
   applyTheme();
   updateJsonStatusPill();
-  // Manual connect mode — no auto-restore
-  updateJsonStatusPill();
+  // Load from Firebase first, then render
+  if(window.loadFromFirebase) {
+    showToast('☁️ Loading data from Firebase...');
+    await window.loadFromFirebase();
+    showToast('✅ Data loaded successfully!');
+  } else {
+    loadData();
+  }
   refreshAllViews();
+  updateSettingsDbStatus();
 }
 
 // Show login first, then initApp() after success
@@ -5136,7 +5143,7 @@ adjustFamilyGrid();
           <input type="checkbox" id="ccexp-isemi" onchange="ccExpToggleEmi()" style="width:16px;height:16px;accent-color:#3a9b5c;cursor:pointer;">
           <div>
             <div style="font-weight:600;font-size:0.85rem;">📱 Card EMI hai</div>
-            <div style="font-size:0.72rem;color:var(--muted);">Mobile, laptop ya koi bhi cheez EMI pe — monthly kab tak kitna katega</div>
+            <div style="font-size:0.72rem;color:var(--muted);">Mobile, laptop or any item on EMI — monthly deduction amount and duration</div>
           </div>
         </label>
         <div id="ccexp-emi-section" style="display:none;margin-top:12px;">
@@ -5150,7 +5157,7 @@ adjustFamilyGrid();
               <input class="finput" id="ccexp-emi-months" type="number" placeholder="e.g. 12" min="1">
             </div>
             <div>
-              <label class="flabel">EMI No. (kitna hua)</label>
+              <label class="flabel">EMI No. (completed)</label>
               <input class="finput" id="ccexp-emi-no" type="number" placeholder="e.g. 2" min="1">
             </div>
           </div>
@@ -5164,7 +5171,7 @@ adjustFamilyGrid();
           <input type="checkbox" id="ccexp-shared" onchange="ccExpToggleShared()" style="width:16px;height:16px;accent-color:var(--accent);cursor:pointer;">
           <div>
             <div style="font-weight:600;font-size:0.85rem;">👥 Family / Friends ka expense</div>
-            <div style="font-size:0.72rem;color:var(--muted);">Kitna unka share hai enter karo — wo cash dega, tum bill mein doge</div>
+            <div style="font-size:0.72rem;color:var(--muted);">Enter their share amount — they will pay cash, you will pay the bill</div>
           </div>
         </label>
         <div id="ccexp-shared-section" style="display:none;margin-top:12px;">
