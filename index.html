@@ -1444,7 +1444,7 @@ select.finput { cursor: pointer; }
     </div>
 
     <!-- Change Password -->
-    <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;">
+    <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px;">
       <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">🔑 Change Password</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <input type="password" id="newPwdInput" placeholder="New password" class="finput" style="flex:1;min-width:120px;">
@@ -1452,6 +1452,13 @@ select.finput { cursor: pointer; }
         <button onclick="changePassword()" class="btn btn-primary btn-sm">Save</button>
       </div>
       <div id="pwd-msg" style="font-size:0.72rem;margin-top:8px;"></div>
+    </div>
+
+    <!-- Logout -->
+    <div style="background:var(--surface);border:1.5px solid rgba(217,79,61,0.3);border-radius:14px;padding:20px;">
+      <div style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">🔓 Account</div>
+      <p style="font-size:0.83rem;color:var(--muted);margin-bottom:14px;">You are currently logged in. Click below to log out of this device.</p>
+      <button onclick="logoutApp()" class="btn" style="width:100%;justify-content:center;padding:11px;background:rgba(217,79,61,0.1);color:var(--red);border:1.5px solid rgba(217,79,61,0.4);border-radius:10px;font-weight:700;cursor:pointer;">🔓 Logout</button>
     </div>
   </div>
 </div>
@@ -3349,8 +3356,13 @@ function getSavedPassword() {
   return window._firebase_password || localStorage.getItem('babyTracker_pwd') || DEFAULT_PASSWORD;
 }
 function checkLogin() {
-  const loggedIn = sessionStorage.getItem('babyTracker_auth') === '1';
-  if(!loggedIn) showLoginScreen();
+  const loggedIn = localStorage.getItem('babyTracker_auth') === '1';
+  if(loggedIn) {
+    // Already logged in — load Firebase data then show app
+    initApp();
+  } else {
+    showLoginScreen();
+  }
 }
 function showLoginScreen() {
   const overlay = document.getElementById('loginOverlay');
@@ -3365,7 +3377,7 @@ function attemptLogin() {
   const input = document.getElementById('loginPasswordInput')?.value || '';
   const errEl = document.getElementById('loginError');
   if(input === getSavedPassword()) {
-    sessionStorage.setItem('babyTracker_auth','1');
+    localStorage.setItem('babyTracker_auth','1');
     hideLoginScreen();
     initApp();
   } else {
@@ -3375,6 +3387,14 @@ function attemptLogin() {
     setTimeout(() => errEl.style.display='none', 3000);
   }
 }
+function logoutApp() {
+  if(!confirm('Are you sure you want to logout?')) return;
+  localStorage.removeItem('babyTracker_auth');
+  sessionStorage.clear();
+  showToast('👋 Logged out successfully!');
+  setTimeout(() => location.reload(), 1000);
+}
+
 function changePassword() {
   const np = document.getElementById('newPwdInput')?.value.trim();
   const cp = document.getElementById('confirmPwdInput')?.value.trim();
