@@ -141,24 +141,73 @@
 }
 /* ── DARK MODE ── */
 body.dark-mode {
-  --bg: #1a1210;
-  --surface: #26180f;
-  --surface2: #301e12;
-  --border: #4a3020;
-  --border2: #5a3a25;
-  --text: #f5e6d3;
-  --muted: #c8a882;
-  --muted2: #a07850;
-  --card-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  --bg: #0f0d0b;
+  --surface: #1c1410;
+  --surface2: #251a12;
+  --border: #3a2818;
+  --border2: #4a3020;
+  --text: #f0e0cc;
+  --muted: #c0906a;
+  --muted2: #9a7050;
+  --card-shadow: 0 2px 20px rgba(0,0,0,0.5);
 }
-body.dark-mode .header { background: linear-gradient(135deg,#0f0a06,#1a1008,#120a04); }
-body.dark-mode .nav-tabs { background: #0f0a06; }
-body.dark-mode .finput { background: var(--surface2); color: var(--text); border-color: var(--border); }
-body.dark-mode .modal { background: var(--surface); }
-body.dark-mode .modal-header { background: var(--surface); }
+body.dark-mode .header { background: linear-gradient(135deg,#0a0806,#141009,#0c0804) !important; }
+body.dark-mode .nav-tabs { background: #0a0806 !important; }
+body.dark-mode .finput { background: var(--surface2) !important; color: var(--text) !important; border-color: var(--border) !important; }
+body.dark-mode .modal { background: var(--surface) !important; }
+body.dark-mode .modal-header { background: var(--surface2) !important; border-color: var(--border) !important; }
+body.dark-mode .modal-footer { background: var(--surface2) !important; border-color: var(--border) !important; }
 body.dark-mode tr:hover td { background: var(--surface2) !important; }
-body.dark-mode th { background: var(--surface2); }
-/* Dark mode toggle button */
+body.dark-mode th { background: var(--surface2) !important; color: var(--muted) !important; }
+body.dark-mode td { border-bottom-color: var(--border) !important; color: var(--text) !important; }
+body.dark-mode .table-wrap { background: var(--surface) !important; border-color: var(--border) !important; }
+body.dark-mode .stat-card { background: var(--surface) !important; border-color: var(--border) !important; }
+body.dark-mode .btn-outline { border-color: var(--border2) !important; color: var(--text) !important; background: transparent !important; }
+body.dark-mode .btn-outline:hover { background: var(--surface2) !important; }
+body.dark-mode .search-input { background: var(--surface2) !important; color: var(--text) !important; border-color: var(--border) !important; }
+body.dark-mode .page { background: var(--bg) !important; }
+body.dark-mode select option { background: var(--surface2); color: var(--text); }
+body.dark-mode .nav-tab { color: var(--muted) !important; }
+body.dark-mode .nav-tab.active { color: var(--accent) !important; }
+body.dark-mode .item-type-btn { background: var(--surface2) !important; border-color: var(--border) !important; color: var(--text) !important; }
+body.dark-mode .item-type-btn.active { background: var(--accent) !important; color: #fff !important; border-color: var(--accent) !important; }
+body.dark-mode .toolbar { background: var(--surface) !important; border-color: var(--border) !important; }
+body.dark-mode .sec-header { background: var(--bg) !important; }
+body.dark-mode .preview-body { background: #fff !important; }
+
+/* ── B&W / MONO MODE ── */
+body.bw-mode {
+  --bg: #f8f8f8;
+  --surface: #ffffff;
+  --surface2: #f0f0f0;
+  --border: #cccccc;
+  --border2: #aaaaaa;
+  --accent: #222222;
+  --accent2: #444444;
+  --accent3: #555555;
+  --accent4: #333333;
+  --gold: #555555;
+  --text: #111111;
+  --muted: #555555;
+  --muted2: #777777;
+  --red: #111111;
+  --green: #222222;
+  --blue: #333333;
+  --milk: #444444;
+  --cerelac: #555555;
+  --diapers: #333333;
+  --homec: #444444;
+  --medical: #555555;
+  --loan: #333333;
+  --card-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  filter: grayscale(100%);
+}
+body.bw-mode .header { background: #111 !important; }
+body.bw-mode .nav-tabs { background: #000 !important; }
+body.bw-mode .btn-primary { background: #222 !important; color: #fff !important; }
+body.bw-mode .btn-green { background: #333 !important; color: #fff !important; }
+body.bw-mode .btn-red { background: #444 !important; color: #fff !important; }
+body.bw-mode .theme-toggle { background: rgba(255,255,255,0.15) !important; color: #fff !important; }
 .theme-toggle {
   background: rgba(254,240,224,0.1); border: 1.5px solid rgba(254,240,224,0.2);
   color: #fef0e0; border-radius: 8px; padding: 5px 10px;
@@ -244,7 +293,7 @@ body {
 .table-wrap { background: var(--surface); border: 1.5px solid var(--border); border-radius: 12px; overflow: auto; box-shadow: var(--card-shadow); }
 table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
 th { padding: 10px 12px; background: var(--surface2); text-align: left; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border-bottom: 1.5px solid var(--border); font-weight: 700; }
-td { padding: 9px 12px; border-bottom: 1px solid #f0e8de; color: var(--text); vertical-align: middle; }
+td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: #fdf4ec; }
 .empty-row { text-align: center; padding: 40px; color: var(--muted2); font-size: 0.85rem; }
@@ -650,6 +699,11 @@ select.finput { cursor: pointer; }
      TAB: ROOM RENT
 ═══════════════════════════════════════ -->
 <div class="page" id="page-rent">
+  <!-- Room Selector Tabs -->
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+    <div id="room-tabs" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+  </div>
+
   <!-- Security Deposit Card -->
   <div id="deposit-card" style="background:linear-gradient(135deg,#1a3a2e,#0f2a1e);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:0 4px 20px rgba(0,0,0,0.2);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
     <div>
@@ -826,7 +880,7 @@ select.finput { cursor: pointer; }
   </div>
 
   <!-- Cards List -->
-  <div id="cc-cards-container" style="display:flex;flex-direction:column;gap:20px;"></div>
+  <div id="cc-cards-container" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(480px,1fr));gap:20px;"></div>
 
 </div>
 
@@ -911,6 +965,21 @@ select.finput { cursor: pointer; }
         <button class="btn btn-outline btn-sm" onclick="runTabReport('loan','preview')">👁 Preview</button>
         <button class="btn btn-green btn-sm" onclick="runTabReport('loan','excel')">📊 Excel</button>
         <button class="btn btn-red btn-sm" onclick="runTabReport('loan','pdf')">📄 PDF</button>
+      </div>
+    </div>
+
+    <!-- Credit Card Report Card -->
+    <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--card-shadow);">
+      <div style="background:linear-gradient(135deg,rgba(74,111,165,0.18),rgba(74,111,165,0.06));padding:16px 18px;border-bottom:1.5px solid var(--border);">
+        <div style="font-size:1.4rem;margin-bottom:4px;">💎</div>
+        <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--text);">Credit Cards</div>
+        <div style="font-size:0.68rem;color:var(--muted2);margin-top:2px;">Card-wise · Personal · EMI · Family</div>
+      </div>
+      <div id="rpt-cc-summary" style="padding:12px 18px;font-size:0.78rem;color:var(--muted2);min-height:60px;"></div>
+      <div style="padding:10px 18px 14px;display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="runTabReport('creditcard','preview')">👁 Preview</button>
+        <button class="btn btn-green btn-sm" onclick="runTabReport('creditcard','excel')">📊 Excel</button>
+        <button class="btn btn-red btn-sm" onclick="runTabReport('creditcard','pdf')">📄 PDF</button>
       </div>
     </div>
 
@@ -1047,6 +1116,26 @@ select.finput { cursor: pointer; }
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeDepositModal()">Cancel</button>
       <button class="btn btn-green" onclick="saveDeposit()">💾 Save Deposit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD ROOM MODAL ═══ -->
+<div class="modal-overlay" id="addRoomModal" onclick="if(event.target===this)closeAddRoomModal()">
+  <div class="modal" style="max-width:360px;">
+    <div class="modal-header">
+      <div class="modal-title" id="roomModalTitle">🏠 Add New Room</div>
+      <button class="modal-close" onclick="closeAddRoomModal()">✕</button>
+    </div>
+    <div class="modal-body" style="display:flex;flex-direction:column;gap:16px;">
+      <div>
+        <label class="flabel">Room Name *</label>
+        <input class="finput" id="room-name-input" placeholder="e.g. My Room, Family Room, Papa ka Ghar">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline" style="flex:1" onclick="closeAddRoomModal()">Cancel</button>
+        <button class="btn btn-primary" style="flex:2" onclick="saveRoom()">💾 Save Room</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1564,13 +1653,15 @@ let db = {
   ccExpenses: [],       // 💎 Per-card expenses
   familySettings: null,
   deposit: null,
+  rooms: [],            // 🏠 Multi-room support
   recycleBin: []  // ♻️ Recycle Bin — saved here before every delete
 };
-let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1 };
+let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1, room:1 };
 // Expose to global for Firebase module
 window.db = db;
 window.nextId = nextId;
 let editId = { baby:null, rent:null, family:null };
+let activeRoomId = null; // currently selected room id
 let currentFamilyType = 'send';
 let selectedReport = 'summary';
 
@@ -1668,7 +1759,7 @@ function switchTab(tab) {
   const idx = tabs.indexOf(tab);
   if(idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if(tab==='baby')      { renderBabyStats(); renderBaby(); updateBabyFilterMonths(); }
-  if(tab==='rent')      { renderRentStats(); renderRent(); renderDepositCard(); }
+  if(tab==='rent')      { renderRentPage(); }
   if(tab==='family')    { renderFamilySettingsBar(); renderFamilyStats(); renderFamilySend(); }
   if(tab==='panchayat') { renderPanchayat(); renderPanchayatStats(); updatePanchayatFilterMonths(); }
   if(tab==='loan')      { renderLoanStats(); renderLoans(); }
@@ -2305,7 +2396,7 @@ function deleteItemEntry(entryId, type, date) {
 function renderMonthly() {
   const allMonths = [...new Set([
     ...db.baby.map(r=>r.month),
-    ...db.rent.map(r=>r.month),
+    ...getAllRentRecords().map(r=>r.month),
     ...db.familySend.map(r=>r.month),
     ...db.panchayat.map(r=>r.month)
   ])].sort().reverse();
@@ -2315,7 +2406,7 @@ function renderMonthly() {
 
   grid.innerHTML = allMonths.map(month=>{
     const baby   = db.baby.find(r=>r.month===month);
-    const rent   = db.rent.find(r=>r.month===month);
+    const rent   = getAllRentRecords().find(r=>r.month===month);
     const send   = db.familySend.filter(r=>r.month===month).reduce((s,r)=>s+(r.amount||0),0);
     const panch  = db.panchayat.filter(r=>r.month===month).reduce((s,r)=>s+(r.amount||0),0);
     const babyTotal = baby?.total||0;
@@ -2357,7 +2448,7 @@ function openRentModal(id=null) {
   document.getElementById('rm_status').value = 'Paid';
   document.getElementById('rentModalTitle').textContent = id ? '✏️ Edit Rent Record' : '🏠 Add Rent Record';
   if(id) {
-    const r = db.rent.find(x=>x.id===id);
+    const r = getActiveRoom().rent.find(x=>x.id===id);
     if(r) {
       document.getElementById('rm_month').value = r.month||'';
       document.getElementById('rm_rent').value = r.rentAmt||'';
@@ -2398,14 +2489,16 @@ function saveRentRecord() {
     remark:   document.getElementById('rm_remark').value||''
   };
   if(editId.rent) {
-    const idx = db.rent.findIndex(x=>x.id===editId.rent);
-    if(idx!==-1) db.rent[idx]=entry;
-  } else { db.rent.push(entry); }
+    const room = getActiveRoom();
+    const idx = room.rent.findIndex(x=>x.id===editId.rent);
+    if(idx!==-1) room.rent[idx]=entry;
+  } else { getActiveRoom().rent.push(entry); }
   saveData(); closeRentModal(); renderRentStats(); renderRent(); renderDepositCard();
   showToast('✅ Rent record saved!');
 }
 function deleteRent(id) {
-  const entry = db.rent.find(x=>x.id===id);
+  const room = getActiveRoom();
+  const entry = room.rent.find(x=>x.id===id);
   if(!entry) return;
   sendToRecycle({
     _recycleId: Date.now()+'_'+Math.random().toString(36).slice(2),
@@ -2413,14 +2506,14 @@ function deleteRent(id) {
     _recycleTime: new Date().toISOString(),
     ...JSON.parse(JSON.stringify(entry))
   });
-  db.rent = db.rent.filter(x=>x.id!==id);
+  room.rent = room.rent.filter(x=>x.id!==id);
   saveData(); renderRentStats(); renderRent();
   showToast('♻️ Moved to Recycle Bin!');
 }
 
 // ── Security Deposit ──
 function openDepositModal() {
-  const d = db.deposit || {};
+  const d = getActiveRoom().deposit || {};
   document.getElementById('dep_amount').value  = d.amount||'';
   document.getElementById('dep_date').value    = d.date||new Date().toISOString().slice(0,10);
   document.getElementById('dep_whom').value    = d.whom||'';
@@ -2433,7 +2526,7 @@ function closeDepositModal() { document.getElementById('depositModal').classList
 function saveDeposit() {
   const amount = parseFloat(document.getElementById('dep_amount').value)||0;
   if(!amount) { showToast('❌ Amount required!'); return; }
-  db.deposit = {
+  getActiveRoom().deposit = {
     amount,
     date:       document.getElementById('dep_date').value||'',
     whom:       document.getElementById('dep_whom').value||'',
@@ -2445,7 +2538,7 @@ function saveDeposit() {
   showToast('✅ Security deposit saved!');
 }
 function renderDepositCard() {
-  const d = db.deposit;
+  const d = getActiveRoom().deposit;
   const amtEl  = document.getElementById('deposit-amount-display');
   const metaEl = document.getElementById('deposit-meta');
   if(!amtEl) return;
@@ -2463,8 +2556,106 @@ function renderDepositCard() {
     `${d.notes ? '<br><span style="font-size:0.68rem;opacity:0.7;">'+d.notes+'</span>' : ''}`;
 }
 
+// ═══════════════════════════════════════
+// MULTI-ROOM SYSTEM
+// ═══════════════════════════════════════
+function migrateRoomsData() {
+  // One-time migration: if rooms is empty but old db.rent exists, move to Room 1
+  if(!db.rooms) db.rooms = [];
+  if(db.rooms.length === 0) {
+    const room1 = {
+      id: nextId.room++,
+      name: 'My Room',
+      rent: db.rent || [],
+      deposit: db.deposit || null
+    };
+    db.rooms.push(room1);
+    // keep db.rent/deposit for old compatibility but rooms is now source of truth
+  }
+  // Ensure activeRoomId is valid
+  if(!activeRoomId || !db.rooms.find(r=>r.id===activeRoomId)) {
+    activeRoomId = db.rooms[0].id;
+  }
+}
+
+function getAllRentRecords() {
+  // Combine rent records from all rooms for reports
+  return (db.rooms||[]).flatMap(room=>(room.rent||[]).map(r=>({...r, _roomName:room.name})));
+}
+
+function getActiveRoom() {
+  migrateRoomsData();
+  return db.rooms.find(r=>r.id===activeRoomId) || db.rooms[0];
+}
+
+function openAddRoomModal(editRoomId) {
+  const room = editRoomId ? db.rooms.find(r=>r.id===editRoomId) : null;
+  document.getElementById('roomModalTitle').textContent = room ? '✏️ Edit Room' : '🏠 Add New Room';
+  document.getElementById('room-name-input').value = room ? room.name : '';
+  document.getElementById('addRoomModal').dataset.editId = editRoomId || '';
+  document.getElementById('addRoomModal').classList.add('open');
+}
+function closeAddRoomModal() { document.getElementById('addRoomModal').classList.remove('open'); }
+function saveRoom() {
+  const name = document.getElementById('room-name-input').value.trim();
+  if(!name) { showToast('❌ Room name required!'); return; }
+  const editRoomId = parseInt(document.getElementById('addRoomModal').dataset.editId) || null;
+  if(editRoomId) {
+    const room = db.rooms.find(r=>r.id===editRoomId);
+    if(room) room.name = name;
+    showToast('✅ Room renamed!');
+  } else {
+    const newRoom = { id: nextId.room++, name, rent: [], deposit: null };
+    db.rooms.push(newRoom);
+    activeRoomId = newRoom.id;
+    showToast('✅ Room added!');
+  }
+  saveData(); closeAddRoomModal(); renderRentPage();
+}
+function deleteRoom(roomId) {
+  if(db.rooms.length <= 1) { showToast('❌ At least 1 room required!'); return; }
+  if(!confirm('Is room ko delete karo? Saara data jayega!')) return;
+  db.rooms = db.rooms.filter(r=>r.id!==roomId);
+  activeRoomId = db.rooms[0].id;
+  saveData(); renderRentPage();
+  showToast('🗑️ Room deleted!');
+}
+function switchRoom(roomId) {
+  activeRoomId = roomId;
+  renderRentPage();
+}
+function renderRentPage() {
+  migrateRoomsData();
+  renderRoomTabs();
+  renderRentStats();
+  renderRent();
+  renderDepositCard();
+}
+function renderRoomTabs() {
+  const el = document.getElementById('room-tabs');
+  if(!el) return;
+  el.innerHTML = db.rooms.map(room=>`
+    <button onclick="switchRoom(${room.id})" style="
+      padding:7px 16px;border-radius:20px;border:1.5px solid var(--border);
+      background:${room.id===activeRoomId?'var(--accent)':'var(--surface2)'};
+      color:${room.id===activeRoomId?'#fff':'var(--text)'};
+      font-size:0.82rem;font-weight:600;cursor:pointer;
+      display:inline-flex;align-items:center;gap:6px;
+      transition:all 0.15s;">
+      🏠 ${room.name}
+      <span onclick="event.stopPropagation();openAddRoomModal(${room.id})" style="opacity:0.7;font-size:0.75rem;" title="Rename">✏️</span>
+      ${db.rooms.length>1?`<span onclick="event.stopPropagation();deleteRoom(${room.id})" style="opacity:0.7;font-size:0.75rem;" title="Delete">🗑️</span>`:''}
+    </button>
+  `).join('')+`
+    <button onclick="openAddRoomModal()" style="padding:7px 14px;border-radius:20px;border:1.5px dashed var(--border);background:transparent;color:var(--muted);font-size:0.82rem;cursor:pointer;">＋ Add Room</button>
+  `;
+}
+
+
+
 function renderRentStats() {
-  const rows = db.rent;
+  const room = getActiveRoom();
+  const rows = room.rent || [];
   const totalRent    = rows.reduce((s,r)=>s+(r.rentAmt||0),0);
   const totalPaid    = rows.reduce((s,r)=>s+(r.paidAmt||0),0);
   const totalPending = rows.reduce((s,r)=>s+(r.pending||0),0);
@@ -2489,9 +2680,10 @@ function renderRentStats() {
 }
 
 function renderRent() {
+  const room = getActiveRoom();
   const q  = document.getElementById('rent-search').value.toLowerCase();
   const sf = document.getElementById('rent-filter-status').value;
-  let rows = db.rent.filter(r=>{
+  let rows = (room.rent||[]).filter(r=>{
     if(sf && r.status!==sf) return false;
     if(q && !(fmtMonth(r.month)+r.status+(r.remark||'')).toLowerCase().includes(q)) return false;
     return true;
@@ -2904,14 +3096,14 @@ function renderFamilyStats() {
 function renderOverview() {
   const cfg    = getFamilySettings();
   const allMonths = [...new Set([
-    ...db.baby.map(r=>r.month), ...db.rent.map(r=>r.month),
+    ...db.baby.map(r=>r.month), ...getAllRentRecords().map(r=>r.month),
     ...(db.familySend||[]).map(r=>r.month), ...(db.panchayat||[]).map(r=>r.month),
     ...getFamilyMonths()
   ])].sort().reverse();
   const tb = document.getElementById('overview-tbody');
   tb.innerHTML = allMonths.map(month=>{
     const baby    = db.baby.find(r=>r.month===month)?.total||0;
-    const rent    = db.rent.find(r=>r.month===month)?.rentAmt||0;
+    const rent    = getAllRentRecords().find(r=>r.month===month)?.rentAmt||0;
     const oblig   = cfg.monthlyAmt||0;
     const fPaid   = getFamilyPaid(month);
     const fPend   = Math.max(0, oblig - fPaid);
@@ -2979,7 +3171,7 @@ function buildReportHTML(type) {
     const diapTotal = allItems.filter(i=>i.type==='diapers').reduce((s,i)=>s+(i.cost||0),0);
     const homecTotal= allItems.filter(i=>i.type==='homec').reduce((s,i)=>s+(i.cost||0),0);
     const medTotal  = allItems.filter(i=>i.type==='doctor'||i.type==='custom').reduce((s,i)=>s+(i.cost||0),0);
-    const rentTotal = db.rent.reduce((s,r)=>s+(r.rentAmt||0),0);
+    const rentTotal = getAllRentRecords().reduce((s,r)=>s+(r.rentAmt||0),0);
     const cfg = getFamilySettings();
     const famMonths = getFamilyMonths();
     const sendTotal = (db.familySend||[]).reduce((s,r)=>s+(r.paidAmt||0),0);
@@ -3004,7 +3196,7 @@ function buildReportHTML(type) {
     </div>
     <div class="sec">Month-wise Summary (${db.baby.length} months tracked)</div>
     <table><thead><tr><th>Month</th><th>🥛 Milk</th><th>🟡 Cerelac</th><th>🟢 Diapers</th><th>🟣 Home Cer</th><th>🩺 Medical</th><th>Baby Total</th><th>Rent</th><th>Grand Total</th></tr></thead>
-    <tbody>${[...new Set([...db.baby.map(r=>r.month),...db.rent.map(r=>r.month)])].sort().reverse().map(m=>{
+    <tbody>${[...new Set([...db.baby.map(r=>r.month),...getAllRentRecords().map(r=>r.month)])].sort().reverse().map(m=>{
       const items = db.baby.filter(r=>r.month===m).flatMap(r=>r.items&&r.items.length?r.items:legacyToItems(r));
       const mk  = items.filter(i=>i.type==='milk').reduce((s,i)=>s+(i.cost||0),0);
       const ce  = items.filter(i=>i.type==='cerelac').reduce((s,i)=>s+(i.cost||0),0);
@@ -3012,7 +3204,7 @@ function buildReportHTML(type) {
       const hc  = items.filter(i=>i.type==='homec').reduce((s,i)=>s+(i.cost||0),0);
       const md  = items.filter(i=>i.type==='doctor'||i.type==='custom').reduce((s,i)=>s+(i.cost||0),0);
       const bt  = mk+ce+di+hc+md;
-      const re=db.rent.find(r=>r.month===m)||{};
+      const re=getAllRentRecords().find(r=>r.month===m)||{};
       const g=bt+(re.rentAmt||0);
       return `<tr><td><b>${fmtMonth(m)}</b></td><td>${fmtCurrency(mk)}</td><td>${fmtCurrency(ce)}</td><td>${fmtCurrency(di)}</td><td>${fmtCurrency(hc)}</td><td>${fmtCurrency(md)}</td><td><b>${fmtCurrency(bt)}</b></td><td>${fmtCurrency(re.rentAmt||0)}</td><td><b style="color:#e8824a;">${fmtCurrency(g)}</b></td></tr>`;
     }).join('')}
@@ -3112,7 +3304,7 @@ function buildReportHTML(type) {
   }
 
   if(type==='rent') {
-    const rows = [...db.rent].sort((a,b)=>b.month.localeCompare(a.month));
+    const rows = [...getAllRentRecords()].sort((a,b)=>b.month.localeCompare(a.month));
     const paid=rows.filter(r=>r.status==='Paid').length, pend=rows.filter(r=>r.status==='Pending').length;
     return buildReportCSS()+`<div>${hdr('Rent Report',rows.length+' months')}
     <div class="krow">
@@ -3154,7 +3346,7 @@ function buildReportHTML(type) {
   }
 
   if(type==='monthly') {
-    const allMonths = [...new Set([...db.baby.map(r=>r.month),...db.rent.map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...db.panchayat.map(r=>r.month)])].sort().reverse();
+    const allMonths = [...new Set([...db.baby.map(r=>r.month),...getAllRentRecords().map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...db.panchayat.map(r=>r.month)])].sort().reverse();
     const allBabyItems = db.baby.flatMap(r=>(r.items&&r.items.length?r.items:legacyToItems(r)).map(i=>({...i,_month:r.month})));
     return buildReportCSS()+`<div>${hdr('Monthly Summary Report',allMonths.length+' months')}
     <table><thead><tr><th>Month</th><th>🥛 Milk</th><th>🟡 Cerelac</th><th>🟢 Diapers</th><th>🟣 Home Cer</th><th>🩺 Medical</th><th>Baby Total</th><th>Rent ₹</th><th>Family ₹</th><th>Panchayat ₹</th><th>Grand Total</th></tr></thead>
@@ -3166,7 +3358,7 @@ function buildReportHTML(type) {
       const hc = items.filter(i=>i.type==='homec').reduce((s,i)=>s+(i.cost||0),0);
       const md = items.filter(i=>i.type==='doctor'||i.type==='custom').reduce((s,i)=>s+(i.cost||0),0);
       const bt = mk+ce+di+hc+md;
-      const re=db.rent.find(r=>r.month===m)||{};
+      const re=getAllRentRecords().find(r=>r.month===m)||{};
       const s=(db.familySend||[]).filter(r=>r.month===m).reduce((a,r)=>a+(r.paidAmt||0),0);
       const p=db.panchayat.filter(r=>r.month===m).reduce((a,r)=>a+(r.amount||0),0);
       const t=bt+(re.rentAmt||0)+s+p;
@@ -3206,7 +3398,7 @@ function buildExcelReport(type) {
   const ds = new Date().toISOString().slice(0,10);
 
   if(type==='summary'||type==='monthly') {
-    const allMonths = [...new Set([...db.baby.map(r=>r.month),...db.rent.map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...db.panchayat.map(r=>r.month)])].sort().reverse();
+    const allMonths = [...new Set([...db.baby.map(r=>r.month),...getAllRentRecords().map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...db.panchayat.map(r=>r.month)])].sort().reverse();
     const allBabyItems = db.baby.flatMap(r=>(r.items&&r.items.length?r.items:legacyToItems(r)).map(i=>({...i,_month:r.month})));
     const rows = allMonths.map(m=>{
       const items = allBabyItems.filter(i=>i._month===m);
@@ -3216,7 +3408,7 @@ function buildExcelReport(type) {
       const hc = items.filter(i=>i.type==='homec').reduce((s,i)=>s+(i.cost||0),0);
       const md = items.filter(i=>i.type==='doctor'||i.type==='custom').reduce((s,i)=>s+(i.cost||0),0);
       const bt = mk+ce+di+hc+md;
-      const re=db.rent.find(r=>r.month===m)||{};
+      const re=getAllRentRecords().find(r=>r.month===m)||{};
       const s2=(db.familySend||[]).filter(r=>r.month===m).reduce((a,r)=>a+(r.paidAmt||0),0);
       const p=db.panchayat.filter(r=>r.month===m).reduce((a,r)=>a+(r.amount||0),0);
       return {'Month':fmtMonth(m),'Milk Powder':mk,'Cerelac':ce,'Diapers':di,'Home Cerelac':hc,'Medical':md,'Baby Total':bt,'Rent':re.rentAmt||0,'Family Sent':s2,'Panchayat':p,'Grand Total':bt+(re.rentAmt||0)+s2+p};
@@ -3262,7 +3454,7 @@ function buildExcelReport(type) {
     if(rows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Powder Tracking');
   }
   if(type==='rent'||type==='summary') {
-    const rows = db.rent.sort((a,b)=>b.month.localeCompare(a.month)).map(r=>({'Month':fmtMonth(r.month),'Rent Amount':r.rentAmt||0,'Paid Date':fmtDate(r.paidDate),'Paid Amount':r.paidAmt||0,'Pending':r.pending||0,'Status':r.status||'','Remark':r.remark||''}));
+    const rows = getAllRentRecords().sort((a,b)=>b.month.localeCompare(a.month)).map(r=>({'Month':fmtMonth(r.month),'Rent Amount':r.rentAmt||0,'Paid Date':fmtDate(r.paidDate),'Paid Amount':r.paidAmt||0,'Pending':r.pending||0,'Status':r.status||'','Remark':r.remark||''}));
     if(rows.length) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'Rent');
   }
   if(type==='family'||type==='summary') {
@@ -3335,18 +3527,33 @@ function restoreData(e) { connectJSONFile(e); }
 // DARK / LIGHT MODE
 // ═══════════════════════════════════════
 function toggleTheme() {
-  const isDark = document.body.classList.toggle('dark-mode');
+  // Cycle: light → dark → bw → light
+  const isLight = !document.body.classList.contains('dark-mode') && !document.body.classList.contains('bw-mode');
+  const isDark  = document.body.classList.contains('dark-mode');
+  // isBW = neither light nor dark
+  let next;
+  if(isLight)       next = 'dark';
+  else if(isDark)   next = 'bw';
+  else              next = 'light';
+  applyThemeMode(next);
+  localStorage.setItem('themeMode', next);
+}
+function applyThemeMode(mode) {
+  document.body.classList.remove('dark-mode','bw-mode');
   const btn = document.getElementById('themeBtn');
-  if(btn) btn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
-  localStorage.setItem('themeMode', isDark ? 'dark' : 'light');
+  if(mode === 'dark') {
+    document.body.classList.add('dark-mode');
+    if(btn) btn.textContent = '⚪ B&W';
+  } else if(mode === 'bw') {
+    document.body.classList.add('bw-mode');
+    if(btn) btn.textContent = '☀️ Light';
+  } else {
+    if(btn) btn.textContent = '🌙 Dark';
+  }
 }
 function applyTheme() {
-  const saved = localStorage.getItem('themeMode');
-  if(saved === 'dark') {
-    document.body.classList.add('dark-mode');
-    const btn = document.getElementById('themeBtn');
-    if(btn) btn.textContent = '☀️ Light';
-  }
+  const saved = localStorage.getItem('themeMode') || 'light';
+  applyThemeMode(saved);
 }
 
 // ═══════════════════════════════════════
@@ -3635,7 +3842,7 @@ function saveBulkRent() {
     const paidAmt  = parseFloat(tr.querySelector('.brent-paid')?.value)||0;
     const pending  = Math.max(0, rentAmt - paidAmt);
     const status   = tr.querySelector('.brent-status')?.value || (pending===0&&paidAmt?'Paid':paidAmt?'Partial':'Pending');
-    db.rent.push({
+    getActiveRoom().rent.push({
       id: nextId.rent++, month, rentAmt,
       paidDate: tr.querySelector('.brent-paiddate')?.value||'',
       paidAmt, pending, status,
@@ -3658,8 +3865,9 @@ function openAddCardModal(editId) {
   if(!db.creditCards) db.creditCards = [];
   const card = editId ? db.creditCards.find(c=>c.id===editId) : null;
   const m = document.getElementById('ccCardModal');
-  document.getElementById('cc-name').value  = card ? card.name  : '';
-  document.getElementById('cc-limit').value = card ? card.limit : '';
+  document.getElementById('cc-name').value         = card ? card.name  : '';
+  document.getElementById('cc-limit').value        = card ? card.limit : '';
+  document.getElementById('cc-billing-day').value  = card ? (card.billingDay || 12) : 12;
   document.getElementById('ccCardModal').dataset.editId = editId || '';
   m.classList.add('open');
 }
@@ -3668,15 +3876,17 @@ function closeCcCardModal() {
 }
 function saveCcCard() {
   const editId = document.getElementById('ccCardModal').dataset.editId || null;
-  const name   = document.getElementById('cc-name').value.trim();
-  const limit  = parseFloat(document.getElementById('cc-limit').value) || 0;
+  const name       = document.getElementById('cc-name').value.trim();
+  const limit      = parseFloat(document.getElementById('cc-limit').value) || 0;
+  const billingDay = parseInt(document.getElementById('cc-billing-day').value) || 12;
   if(!name) { showToast('❌ Card naam required!'); return; }
+  if(billingDay < 1 || billingDay > 28) { showToast('❌ Billing day 1–28 ke beech hona chahiye!'); return; }
   if(!db.creditCards) db.creditCards = [];
   const card = {
-    id:        editId || ('cc' + nextId.cc++),
-    name, limit,
-    color:     editId ? (db.creditCards.find(c=>c.id===editId)||{}).color || '#4a6fa5' : '#4a6fa5',
-    createdAt: editId ? (db.creditCards.find(c=>c.id===editId)||{}).createdAt : new Date().toISOString()
+    id:         editId || ('cc' + nextId.cc++),
+    name, limit, billingDay,
+    color:      editId ? (db.creditCards.find(c=>c.id===editId)||{}).color || '#4a6fa5' : '#4a6fa5',
+    createdAt:  editId ? (db.creditCards.find(c=>c.id===editId)||{}).createdAt : new Date().toISOString()
   };
   if(editId) {
     const idx = db.creditCards.findIndex(c=>c.id===editId);
@@ -3903,7 +4113,7 @@ function closeCcViewModal() {
 let ccReportMonth  = new Date().toISOString().slice(0,7);
 let ccDashMonth   = (() => {
   const now = new Date();
-  if(now.getDate() > 12) {
+  if(now.getDate() >= 12) {
     const d = new Date(now.getFullYear(), now.getMonth()+1, 1);
     return d.toISOString().slice(0,7);
   }
@@ -4005,24 +4215,25 @@ function renderCcReport() {
 // ── Render Main CC Page ───────────────
 // Billing cycle helper — 12th to 12th
 // ccDashMonth stores the END month of cycle (e.g. "2026-04" means Mar 12 – Apr 12)
-function ccGetCycleRange(cycleEndMonth) {
-  const billingDay = 12;
+function ccGetCycleRange(cycleEndMonth, billingDay) {
+  billingDay = billingDay || 12;
   const [ey, em] = cycleEndMonth.split('-').map(Number);
-  const cycleEnd   = new Date(ey, em-1, billingDay); // Apr 12
-  const cycleStart = new Date(ey, em-2, billingDay); // Mar 12
-  const startStr   = cycleStart.toISOString().split('T')[0]; // "2026-03-12"
-  const endStr     = cycleEnd.toISOString().split('T')[0];   // "2026-04-12"
+  const cycleEnd   = new Date(ey, em-1, billingDay); // e.g. Apr 12
+  const cycleStart = new Date(ey, em-2, billingDay); // e.g. Mar 12
+  const startStr   = cycleStart.toISOString().split('T')[0];
+  const endStr     = cycleEnd.toISOString().split('T')[0];
   return { startStr, endStr, cycleStart, cycleEnd };
 }
-function ccExpInCycle(expDate, cycleEndMonth) {
+function ccExpInCycle(expDate, cycleEndMonth, billingDay) {
   if(!expDate) return false;
-  const { startStr, endStr } = ccGetCycleRange(cycleEndMonth);
+  const { startStr, endStr } = ccGetCycleRange(cycleEndMonth, billingDay);
   return expDate >= startStr && expDate <= endStr;
 }
-function ccCurrentCycleMonth() {
-  // If today > 12, current cycle ends next month's 12th
+function ccCurrentCycleMonth(billingDay) {
+  billingDay = billingDay || 12;
+  // If today >= billingDay, current cycle ends next month's billingDay
   const now = new Date();
-  if(now.getDate() > 12) {
+  if(now.getDate() >= billingDay) {
     const d = new Date(now.getFullYear(), now.getMonth()+1, 1);
     return d.toISOString().slice(0,7);
   } else {
@@ -4059,10 +4270,14 @@ function renderCreditCards() {
   const thisMonthFriend  = cycleExps.reduce((s,e)=>s+(e.friendAmount||0),0);
   const thisMonthMine    = thisMonthExp - thisMonthEmi - thisMonthFriend;
   const statsEl = document.getElementById('cc-stats-row');
-  // Update cycle label
+  // Update cycle label — show range based on most common or first card's billingDay
   const mlEl = document.getElementById('cc-month-label');
   if(mlEl) {
-    const s = new Date(startStr), ex = new Date(endStr);
+    // Use first card's billingDay if available, else default 12
+    const firstCard = db.creditCards && db.creditCards.length ? db.creditCards[0] : null;
+    const dashBillingDay = firstCard ? (firstCard.billingDay || 12) : 12;
+    const { startStr: dashStart, endStr: dashEnd } = ccGetCycleRange(ccDashMonth, dashBillingDay);
+    const s = new Date(dashStart), ex = new Date(dashEnd);
     mlEl.textContent = s.getDate()+' '+s.toLocaleDateString('en-IN',{month:'short'})+' – '+ex.getDate()+' '+ex.toLocaleDateString('en-IN',{month:'short',year:'numeric'});
   }
   // Disable next button if current cycle
@@ -4109,12 +4324,18 @@ function renderCreditCards() {
   container.innerHTML = db.creditCards.map((card,ci)=>{
     const color    = card.color || COLORS[ci % COLORS.length];
     const cardExps = db.ccExpenses.filter(e=>e.cardId===card.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
-    const cycleCardExps = cardExps.filter(e=>ccExpInCycle(e.date, ccDashMonth));
-    const mTotal   = cycleCardExps.reduce((s,e)=>s+e.amount,0);
-    const allTotal = cardExps.reduce((s,e)=>s+e.amount,0);
-    const pct      = card.limit ? Math.min(100,Math.round((mTotal/card.limit)*100)) : 0;
-    const bColor   = pct>80?'#d94f3d':pct>50?'#e8824a':'#3a9b5c';
-    const recent   = cardExps.slice(0,3);
+    const cardBillingDay = card.billingDay || 12;
+    const { startStr: cardStart, endStr: cardEnd } = ccGetCycleRange(ccDashMonth, cardBillingDay);
+    const cycleCardExps = cardExps.filter(e=>ccExpInCycle(e.date, ccDashMonth, cardBillingDay));
+    const mTotal      = cycleCardExps.reduce((s,e)=>s+e.amount,0);
+    const mEmi        = cycleCardExps.filter(e=>e.emiAmount>0).reduce((s,e)=>s+e.emiAmount,0);
+    const mFriend     = cycleCardExps.reduce((s,e)=>s+(e.friendAmount||0),0);
+    const mPersonal   = mTotal - mEmi - mFriend;
+    const allTotal    = cardExps.reduce((s,e)=>s+e.amount,0);
+    const available   = card.limit ? Math.max(0, card.limit - mTotal) : null;
+    const pct         = card.limit ? Math.min(100,Math.round((mTotal/card.limit)*100)) : 0;
+    const bColor      = pct>80?'#d94f3d':pct>50?'#e8824a':'#3a9b5c';
+    const recent      = cycleCardExps.slice(0,3);
 
     return `
     <div style="background:var(--surface);border-radius:16px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--card-shadow);">
@@ -4125,7 +4346,7 @@ function renderCreditCards() {
         <div style="display:flex;justify-content:space-between;align-items:flex-start;">
           <div>
             <div style="font-size:1.2rem;font-weight:700;color:#fff;">${card.name}</div>
-            ${card.limit?`<div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px;">Limit: ₹${card.limit.toLocaleString('en-IN')}</div>`:''}
+            ${card.limit?`<div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px;">Limit: ₹${card.limit.toLocaleString('en-IN')} &nbsp;•&nbsp; Cycle: ${cardBillingDay}th every month</div>`:`<div style="font-size:0.72rem;color:rgba(255,255,255,0.65);margin-top:2px;">Cycle: ${cardBillingDay}th every month</div>`}
           </div>
           <div style="display:flex;gap:6px;">
             <button onclick="openCcViewModal('${card.id}')" style="background:rgba(255,255,255,0.15);border:none;border-radius:8px;padding:6px 10px;color:#fff;cursor:pointer;font-size:0.8rem;" title="View all expenses">👁️</button>
@@ -4135,7 +4356,7 @@ function renderCreditCards() {
         </div>
         <div style="margin-top:14px;display:flex;justify-content:space-between;align-items:flex-end;">
           <div>
-            <div style="font-size:0.6rem;color:rgba(255,255,255,0.6);">${startStr.slice(5).replace("-","/")} – ${endStr.slice(5).replace("-","/")}</div>
+            <div style="font-size:0.6rem;color:rgba(255,255,255,0.6);">${cardStart.slice(5).replace("-","/")} – ${cardEnd.slice(5).replace("-","/")}</div>
             <div style="font-size:1.5rem;font-weight:700;color:#fff;">₹${mTotal.toLocaleString('en-IN')}</div>
           </div>
           <div style="text-align:right;">
@@ -4150,14 +4371,36 @@ function renderCreditCards() {
         <div style="height:4px;background:var(--border);border-radius:4px;overflow:hidden;">
           <div style="height:100%;width:${pct}%;background:${bColor};border-radius:4px;"></div>
         </div>
-        <div style="font-size:0.68rem;color:${bColor};padding:4px 0 0;text-align:right;">${pct}% of limit used this month</div>
+        <div style="display:flex;justify-content:space-between;padding:4px 0 0;">
+          <div style="font-size:0.68rem;color:var(--muted);">Available: <span style="color:#3a9b5c;font-weight:600;">₹${available.toLocaleString('en-IN')}</span></div>
+          <div style="font-size:0.68rem;color:${bColor};">${pct}% of limit used</div>
+        </div>
       </div>`:''}
+      <!-- Mini Stats Dashboard -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-top:10px;">
+        <div style="padding:10px 12px;text-align:center;border-right:1px solid var(--border);">
+          <div style="font-size:0.6rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.03em;">Total</div>
+          <div style="font-size:0.9rem;font-weight:700;color:var(--red);">₹${mTotal.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="padding:10px 12px;text-align:center;border-right:1px solid var(--border);">
+          <div style="font-size:0.6rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.03em;">Personal</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#e8824a;">₹${mPersonal.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="padding:10px 12px;text-align:center;border-right:1px solid var(--border);">
+          <div style="font-size:0.6rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.03em;">Fam/Friends</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#5b9bd5;">₹${mFriend.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="padding:10px 12px;text-align:center;">
+          <div style="font-size:0.6rem;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.03em;">Card EMI</div>
+          <div style="font-size:0.9rem;font-weight:700;color:#3a9b5c;">₹${mEmi.toLocaleString('en-IN')}</div>
+        </div>
+      </div>
       <!-- Recent Expenses -->
       <div style="padding:14px 20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
           <div style="font-size:0.82rem;font-weight:600;color:var(--muted);">RECENT EXPENSES</div>
           <div style="display:flex;gap:6px;">
-            <button class="btn btn-outline btn-sm" onclick="openCcViewModal('${card.id}')">📋 All (${cardExps.length})</button>
+            <button class="btn btn-outline btn-sm" onclick="openCcViewModal('${card.id}')">📋 All (${cycleCardExps.length})</button>
             <button class="btn btn-primary btn-sm" onclick="openCcExpenseModal('${card.id}')">＋ Add</button>
           </div>
         </div>
@@ -4325,7 +4568,7 @@ function restoreRecycleItem(recycleId) {
       renderBabyStats(); renderBaby(); updateBabyFilterMonths();
     } else if(type === 'rent') {
       const { _recycleId, _recycleType, _recycleTime, ...cleanItem } = item;
-      db.rent.push(cleanItem);
+      getActiveRoom().rent.push(cleanItem);
       renderRentStats(); renderRent();
     } else if(type === 'familySend') {
       const { _recycleId, _recycleType, _recycleTime, ...cleanItem } = item;
@@ -4830,9 +5073,9 @@ function renderReportSummaries() {
   if(el1) el1.innerHTML = `Total: <b style="color:var(--accent);">₹${babyTotal.toLocaleString('en-IN')}</b> · ${db.baby.length} months · ${allBabyItems.length} purchases`;
 
   // Rent
-  const rentTotal = db.rent.reduce((s,r)=>s+(r.rentAmt||0),0);
-  const rentPaid  = db.rent.reduce((s,r)=>s+(r.paidAmt||0),0);
-  const rentPend  = db.rent.reduce((s,r)=>s+(r.pending||0),0);
+  const rentTotal = getAllRentRecords().reduce((s,r)=>s+(r.rentAmt||0),0);
+  const rentPaid  = getAllRentRecords().reduce((s,r)=>s+(r.paidAmt||0),0);
+  const rentPend  = getAllRentRecords().reduce((s,r)=>s+(r.pending||0),0);
   const el2 = document.getElementById('rpt-rent-summary');
   if(el2) el2.innerHTML = `Total: <b style="color:var(--accent);">₹${rentTotal.toLocaleString('en-IN')}</b> · Paid: <b style="color:var(--green);">₹${rentPaid.toLocaleString('en-IN')}</b> · Pending: <b style="color:var(--red);">₹${rentPend.toLocaleString('en-IN')}</b>`;
 
@@ -4857,10 +5100,19 @@ function renderReportSummaries() {
   const el5 = document.getElementById('rpt-loan-summary');
   if(el5) el5.innerHTML = `Borrowed: <b style="color:var(--loan);">₹${loanTotal.toLocaleString('en-IN')}</b> · Repaid: <b style="color:var(--green);">₹${loanPaid.toLocaleString('en-IN')}</b> · Balance: <b style="color:var(--red);">₹${loanBal.toLocaleString('en-IN')}</b>`;
 
+  // Credit Cards
+  const ccExps     = db.ccExpenses || [];
+  const ccTotal    = ccExps.reduce((s,e)=>s+e.amount,0);
+  const ccEmi      = ccExps.filter(e=>e.emiAmount>0).reduce((s,e)=>s+e.emiAmount,0);
+  const ccFriend   = ccExps.reduce((s,e)=>s+(e.friendAmount||0),0);
+  const ccCards    = db.creditCards || [];
+  const el7 = document.getElementById('rpt-cc-summary');
+  if(el7) el7.innerHTML = `Total: <b style="color:#4a6fa5;">₹${ccTotal.toLocaleString('en-IN')}</b> · ${ccCards.length} cards · ${ccExps.length} transactions · EMI: <b style="color:#3a9b5c;">₹${ccEmi.toLocaleString('en-IN')}</b>`;
+
   // Combined
   const grand = babyTotal + rentTotal + famPaid + panchTotal + loanTotal;
   const el6 = document.getElementById('rpt-combined-summary');
-  if(el6) el6.innerHTML = `Grand Total: <b style="color:var(--accent);">₹${grand.toLocaleString('en-IN')}</b> · ${db.baby.length + db.rent.length} records`;
+  if(el6) el6.innerHTML = `Grand Total: <b style="color:var(--accent);">₹${grand.toLocaleString('en-IN')}</b> · ${db.baby.length + getAllRentRecords().length} records`;
 }
 
 function runTabReport(tab, action) {
@@ -4912,12 +5164,12 @@ function runTabReport(tab, action) {
   }
 
   else if(tab === 'rent') {
-    const rows=[...db.rent].sort((a,b)=>b.month.localeCompare(a.month));
+    const rows=[...getAllRentRecords()].sort((a,b)=>b.month.localeCompare(a.month));
     const tR=rows.reduce((s,r)=>s+(r.rentAmt||0),0), tP=rows.reduce((s,r)=>s+(r.paidAmt||0),0), tPend=rows.reduce((s,r)=>s+(r.pending||0),0);
-    const dep=db.deposit;
+    const allDeposits = (db.rooms||[]).filter(rm=>rm.deposit&&rm.deposit.amount);
     html=css+`<div>
-      <div class="rh"><div><div class="rt">🏠 Room Rent Report</div><div class="rs">Baby & Home Tracker</div></div><div class="rm">Generated: ${now}<br>${rows.length} months</div></div>
-      ${dep && dep.amount ? `<div style="background:rgba(109,191,138,0.08);border:1px solid rgba(109,191,138,0.3);border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:0.8rem;"><b>🔒 Security Deposit:</b> ${fmtCurrency(dep.amount)} · ${dep.refundable==='yes'?'Refundable':'Non-refundable'} · Status: ${dep.status} ${dep.whom?'· To: '+dep.whom:''}</div>` : ''}
+      <div class="rh"><div><div class="rt">🏠 Room Rent Report</div><div class="rs">Baby & Home Tracker</div></div><div class="rm">Generated: ${now}<br>${(db.rooms||[]).length} rooms · ${rows.length} records</div></div>
+      ${allDeposits.map(rm=>`<div style="background:rgba(109,191,138,0.08);border:1px solid rgba(109,191,138,0.3);border-radius:8px;padding:10px 14px;margin-bottom:8px;font-size:0.8rem;"><b>🔒 ${rm.name} — Security Deposit:</b> ${fmtCurrency(rm.deposit.amount)} · ${rm.deposit.refundable==='yes'?'Refundable':'Non-refundable'} · Status: ${rm.deposit.status} ${rm.deposit.whom?'· To: '+rm.deposit.whom:''}</div>`).join('')}
       <div class="krow">
         <div class="kc"><div class="kv">₹${tR.toLocaleString('en-IN')}</div><div class="kl">Total Rent</div></div>
         <div class="kc"><div class="kv g">₹${tP.toLocaleString('en-IN')}</div><div class="kl">Total Paid</div></div>
@@ -4925,9 +5177,9 @@ function runTabReport(tab, action) {
         <div class="kc"><div class="kv g">${rows.filter(r=>r.status==='Paid').length}</div><div class="kl">Paid Months</div></div>
         <div class="kc"><div class="kv r">${rows.filter(r=>r.status==='Pending').length}</div><div class="kl">Pending</div></div>
       </div>
-      <div class="sec">Month-wise Rent Records</div>
-      <table><thead><tr><th>Month</th><th>Rent ₹</th><th>Paid Date</th><th>Paid ₹</th><th>Pending ₹</th><th>Status</th><th>Remark</th></tr></thead>
-      <tbody>${rows.map(r=>`<tr><td><b>${fmtMonth(r.month)}</b></td><td>${fmtCurrency(r.rentAmt)}</td><td>${fmtDate(r.paidDate)}</td><td class="gr">${fmtCurrency(r.paidAmt)}</td><td class="${r.pending?'re':'gr'}">${fmtCurrency(r.pending)}</td><td class="${r.status==='Paid'?'gr':r.status==='Pending'?'re':'am'}">${r.status}</td><td>${r.remark||'—'}</td></tr>`).join('')}</tbody></table>${ft}</div>`;
+      <div class="sec">Month-wise Rent Records (All Rooms)</div>
+      <table><thead><tr><th>Room</th><th>Month</th><th>Rent ₹</th><th>Paid Date</th><th>Paid ₹</th><th>Pending ₹</th><th>Status</th><th>Remark</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr><td><b>${r._roomName||'—'}</b></td><td><b>${fmtMonth(r.month)}</b></td><td>${fmtCurrency(r.rentAmt)}</td><td>${fmtDate(r.paidDate)}</td><td class="gr">${fmtCurrency(r.paidAmt)}</td><td class="${r.pending?'re':'gr'}">${fmtCurrency(r.pending)}</td><td class="${r.status==='Paid'?'gr':r.status==='Pending'?'re':'am'}">${r.status}</td><td>${r.remark||'—'}</td></tr>`).join('')}</tbody></table>${ft}</div>`;
   }
 
   else if(tab === 'family') {
@@ -4997,16 +5249,76 @@ function runTabReport(tab, action) {
       }).join('')}${ft}</div>`;
   }
 
+  else if(tab === 'creditcard') {
+    const cards   = db.creditCards || [];
+    const allExps = db.ccExpenses  || [];
+    const tTotal  = allExps.reduce((s,e)=>s+e.amount,0);
+    const tEmi    = allExps.filter(e=>e.emiAmount>0).reduce((s,e)=>s+e.emiAmount,0);
+    const tFriend = allExps.reduce((s,e)=>s+(e.friendAmount||0),0);
+    const tPers   = tTotal - tEmi - tFriend;
+
+    // Month-wise data (calendar month)
+    const allMonths = [...new Set(allExps.map(e=>e.date?e.date.slice(0,7):''))].filter(Boolean).sort().reverse();
+
+    html = css+`<div>
+      <div class="rh"><div><div class="rt">💎 Credit Card Report</div><div class="rs">Baby & Home Tracker</div></div><div class="rm">Generated: ${now}<br>${cards.length} cards · ${allExps.length} transactions</div></div>
+      <div class="krow">
+        <div class="kc"><div class="kv" style="color:#4a6fa5;">₹${tTotal.toLocaleString('en-IN')}</div><div class="kl">Total Spend</div></div>
+        <div class="kc"><div class="kv" style="color:#e8824a;">₹${tPers.toLocaleString('en-IN')}</div><div class="kl">Personal</div></div>
+        <div class="kc"><div class="kv" style="color:#5b9bd5;">₹${tFriend.toLocaleString('en-IN')}</div><div class="kl">Family/Friends</div></div>
+        <div class="kc"><div class="kv g">₹${tEmi.toLocaleString('en-IN')}</div><div class="kl">Card EMI</div></div>
+        <div class="kc"><div class="kv">${cards.length}</div><div class="kl">Cards</div></div>
+      </div>
+
+      <div class="sec">Card-wise Summary</div>
+      <table><thead><tr><th>Card</th><th>Limit</th><th>Billing Day</th><th>Total Spend</th><th>Personal</th><th>Fam/Friends</th><th>EMI</th><th>Transactions</th></tr></thead>
+      <tbody>${cards.map(card=>{
+        const exps   = allExps.filter(e=>e.cardId===card.id);
+        const cTotal = exps.reduce((s,e)=>s+e.amount,0);
+        const cEmi   = exps.filter(e=>e.emiAmount>0).reduce((s,e)=>s+e.emiAmount,0);
+        const cFri   = exps.reduce((s,e)=>s+(e.friendAmount||0),0);
+        const cPers  = cTotal - cEmi - cFri;
+        return `<tr><td><b>${card.name}</b></td><td>${card.limit?fmtCurrency(card.limit):'—'}</td><td>${card.billingDay||12}th</td><td style="color:#4a6fa5;font-weight:700;">${fmtCurrency(cTotal)}</td><td style="color:#e8824a;">${fmtCurrency(cPers)}</td><td style="color:#5b9bd5;">${fmtCurrency(cFri)}</td><td style="color:#3a9b5c;">${fmtCurrency(cEmi)}</td><td>${exps.length}</td></tr>`;
+      }).join('')}
+      <tr style="background:#f0f4ff;font-weight:700;"><td colspan="3">TOTAL</td><td style="color:#4a6fa5;">${fmtCurrency(tTotal)}</td><td style="color:#e8824a;">${fmtCurrency(tPers)}</td><td style="color:#5b9bd5;">${fmtCurrency(tFriend)}</td><td style="color:#3a9b5c;">${fmtCurrency(tEmi)}</td><td>${allExps.length}</td></tr>
+      </tbody></table>
+
+      <div class="sec">Month-wise Spend</div>
+      <table><thead><tr><th>Month</th>${cards.map(c=>`<th>${c.name}</th>`).join('')}<th>Total</th></tr></thead>
+      <tbody>${allMonths.map(m=>{
+        const mExps = allExps.filter(e=>e.date && e.date.slice(0,7)===m);
+        const mTotal2= mExps.reduce((s,e)=>s+e.amount,0);
+        const cols  = cards.map(card=>{
+          const amt=allExps.filter(e=>e.cardId===card.id && e.date && e.date.slice(0,7)===m).reduce((s,e)=>s+e.amount,0);
+          return `<td>${amt?fmtCurrency(amt):'—'}</td>`;
+        }).join('');
+        return `<tr><td><b>${fmtMonth(m)}</b></td>${cols}<td><b style="color:#e8824a;">${fmtCurrency(mTotal2)}</b></td></tr>`;
+      }).join('')}
+      <tr style="background:#f0f4ff;font-weight:700;"><td>TOTAL</td>${cards.map(card=>{
+        const amt=allExps.filter(e=>e.cardId===card.id).reduce((s,e)=>s+e.amount,0);
+        return `<td style="color:#4a6fa5;">${fmtCurrency(amt)}</td>`;
+      }).join('')}<td style="color:#e8824a;">${fmtCurrency(tTotal)}</td></tr>
+      </tbody></table>
+
+      <div class="sec">All Transactions</div>
+      <table><thead><tr><th>Date</th><th>Card</th><th>Description</th><th>Category</th><th>Amount</th><th>Personal</th><th>Fam/Friend</th><th>EMI</th></tr></thead>
+      <tbody>${[...allExps].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>{
+        const cardName=(cards.find(c=>c.id===e.cardId)||{}).name||'—';
+        const myAmt=e.amount-(e.friendAmount||0)-(e.emiAmount||0);
+        return `<tr><td>${fmtDate(e.date)}</td><td>${cardName}</td><td><b>${e.desc||'—'}</b></td><td>${e.category||'—'}</td><td style="color:#4a6fa5;font-weight:700;">${fmtCurrency(e.amount)}</td><td style="color:#e8824a;">${myAmt>0?fmtCurrency(myAmt):'—'}</td><td style="color:#5b9bd5;">${e.friendAmount?fmtCurrency(e.friendAmount)+'<br><span style="font-size:0.68rem;">'+(e.friendName||'')+'</span>':'—'}</td><td style="color:#3a9b5c;">${e.emiAmount?fmtCurrency(e.emiAmount)+'×'+e.emiMonths+'m':'—'}</td></tr>`;
+      }).join('')}</tbody></table>${ft}</div>`;
+  }
+
   else if(tab === 'summary') {
     const allBabyItems = db.baby.flatMap(r=>(r.items&&r.items.length?r.items:legacyToItems(r)));
     const babyT  = allBabyItems.reduce((s,i)=>s+(i.cost||0),0);
-    const rentT  = db.rent.reduce((s,r)=>s+(r.rentAmt||0),0);
+    const rentT  = getAllRentRecords().reduce((s,r)=>s+(r.rentAmt||0),0);
     const cfg    = getFamilySettings(), famMonths=getFamilyMonths();
     const famPd  = (db.familySend||[]).reduce((s,r)=>s+(r.paidAmt||0),0);
     const panchT = (db.panchayat||[]).reduce((s,r)=>s+(r.amount||0),0);
     const loanT  = (db.loans||[]).reduce((s,l)=>s+(l.amount||0),0);
     const grand  = babyT+rentT+famPd+panchT;
-    const allMonths=[...new Set([...db.baby.map(r=>r.month),...db.rent.map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...(db.panchayat||[]).map(r=>r.month)])].sort().reverse();
+    const allMonths=[...new Set([...db.baby.map(r=>r.month),...getAllRentRecords().map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...(db.panchayat||[]).map(r=>r.month)])].sort().reverse();
     const allBabyItemsM = db.baby.flatMap(r=>(r.items&&r.items.length?r.items:legacyToItems(r)).map(i=>({...i,_month:r.month})));
     html=css+`<div>
       <div class="rh"><div><div class="rt">📋 Combined Summary Report</div><div class="rs">Baby & Home Tracker</div></div><div class="rm">Generated: ${now}</div></div>
@@ -5023,7 +5335,7 @@ function runTabReport(tab, action) {
       <tbody>${allMonths.map(m=>{
         const its=allBabyItemsM.filter(i=>i._month===m);
         const b=its.reduce((s,i)=>s+(i.cost||0),0);
-        const r=db.rent.find(x=>x.month===m)||{};
+        const r=getAllRentRecords().find(x=>x.month===m)||{};
         const f=(db.familySend||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.paidAmt||0),0);
         const p=(db.panchayat||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.amount||0),0);
         const t=b+(r.rentAmt||0)+f+p;
@@ -5065,7 +5377,7 @@ function buildTabExcel(tab) {
     if(itemRows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(itemRows),'Baby Items');
   }
   if(tab==='rent'||tab==='summary') {
-    const rows=db.rent.sort((a,b)=>b.month.localeCompare(a.month)).map(r=>({'Month':fmtMonth(r.month),'Rent':r.rentAmt||0,'Paid Date':fmtDate(r.paidDate),'Paid':r.paidAmt||0,'Pending':r.pending||0,'Status':r.status||'','Remark':r.remark||''}));
+    const rows=getAllRentRecords().sort((a,b)=>b.month.localeCompare(a.month)).map(r=>({'Room':r._roomName||'—','Month':fmtMonth(r.month),'Rent':r.rentAmt||0,'Paid Date':fmtDate(r.paidDate),'Paid':r.paidAmt||0,'Pending':r.pending||0,'Status':r.status||'','Remark':r.remark||''}));
     if(rows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Rent');
   }
   if(tab==='family'||tab==='summary') {
@@ -5077,14 +5389,41 @@ function buildTabExcel(tab) {
     const rows=(db.panchayat||[]).sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(r=>({'Date':r.date||'','Month':fmtMonth(r.month),'Type':r.type||'General','Amount':r.amount||0,'Remark':r.remark||''}));
     if(rows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Panchayat');
   }
+  if(tab==='creditcard') {
+    const cards=db.creditCards||[], allExps=db.ccExpenses||[];
+    // Card summary sheet
+    const cardRows=cards.map(card=>{
+      const exps=allExps.filter(e=>e.cardId===card.id);
+      const cTotal=exps.reduce((s,e)=>s+e.amount,0);
+      const cEmi=exps.filter(e=>e.emiAmount>0).reduce((s,e)=>s+e.emiAmount,0);
+      const cFri=exps.reduce((s,e)=>s+(e.friendAmount||0),0);
+      return {'Card':card.name,'Limit':card.limit||0,'Billing Day':card.billingDay||12,'Total Spend':cTotal,'Personal':cTotal-cEmi-cFri,'Family/Friends':cFri,'EMI':cEmi,'Transactions':exps.length};
+    });
+    if(cardRows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(cardRows),'Card Summary');
+    // All transactions sheet
+    const expRows=[...allExps].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).map(e=>{
+      const cardName=(cards.find(c=>c.id===e.cardId)||{}).name||'—';
+      return {'Date':e.date||'','Card':cardName,'Description':e.desc||'','Category':e.category||'','Amount':e.amount,'Personal':e.amount-(e.friendAmount||0)-(e.emiAmount||0),'Friend/Family':e.friendAmount||0,'Friend Name':e.friendName||'','EMI Amount':e.emiAmount||0,'EMI Months':e.emiMonths||0};
+    });
+    if(expRows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(expRows),'All Transactions');
+    // Month-wise sheet
+    const mths=[...new Set(allExps.map(e=>e.date?e.date.slice(0,7):'')).values()].filter(Boolean).sort().reverse();
+    const mRows=mths.map(m=>{
+      const mExps=allExps.filter(e=>e.date&&e.date.slice(0,7)===m);
+      const row={'Month':fmtMonth(m),'Total':mExps.reduce((s,e)=>s+e.amount,0)};
+      cards.forEach(c=>{row[c.name]=allExps.filter(e=>e.cardId===c.id&&e.date&&e.date.slice(0,7)===m).reduce((s,e)=>s+e.amount,0);});
+      return row;
+    });
+    if(mRows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(mRows),'Month-wise');
+  }
   if(tab==='loan'||tab==='summary') {
     const rows=(db.loans||[]).map(l=>{const paid=(l.repayments||[]).reduce((s,r)=>s+(r.amount||0),0);return {'Name':l.name,'Lender':l.lender||'','Type':l.type,'Amount':l.amount,'EMI':l.emi||0,'Repaid':paid,'Balance':getLoanBalance(l),'Status':getLoanBalance(l)===0?'Closed':'Active'};});
     if(rows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Loans');
   }
   if(tab==='summary') {
-    const allMonths=[...new Set([...db.baby.map(r=>r.month),...db.rent.map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...(db.panchayat||[]).map(r=>r.month)])].sort().reverse();
+    const allMonths=[...new Set([...db.baby.map(r=>r.month),...getAllRentRecords().map(r=>r.month),...(db.familySend||[]).map(r=>r.month),...(db.panchayat||[]).map(r=>r.month)])].sort().reverse();
     const allBabyItemsM=db.baby.flatMap(r=>(r.items&&r.items.length?r.items:legacyToItems(r)).map(i=>({...i,_month:r.month})));
-    const rows=allMonths.map(m=>{const its=allBabyItemsM.filter(i=>i._month===m),b=its.reduce((s,i)=>s+(i.cost||0),0),r=db.rent.find(x=>x.month===m)||{},f=(db.familySend||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.paidAmt||0),0),p=(db.panchayat||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.amount||0),0);return {'Month':fmtMonth(m),'Baby':b,'Rent':r.rentAmt||0,'Family':f,'Panchayat':p,'Total':b+(r.rentAmt||0)+f+p};});
+    const rows=allMonths.map(m=>{const its=allBabyItemsM.filter(i=>i._month===m),b=its.reduce((s,i)=>s+(i.cost||0),0),r=getAllRentRecords().find(x=>x.month===m)||{},f=(db.familySend||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.paidAmt||0),0),p=(db.panchayat||[]).filter(x=>x.month===m).reduce((s,x)=>s+(x.amount||0),0);return {'Month':fmtMonth(m),'Baby':b,'Rent':r.rentAmt||0,'Family':f,'Panchayat':p,'Total':b+(r.rentAmt||0)+f+p};});
     if(rows.length) XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(rows),'Monthly Summary');
   }
   if(!wb.SheetNames.length) { showToast('❌ No data.'); return; }
@@ -5127,6 +5466,7 @@ async function initApp() {
     loadData();
   }
 
+  migrateRoomsData(); // ensure rooms structure is initialized
   refreshAllViews();
   updateSettingsDbStatus();
 }
@@ -5158,6 +5498,11 @@ adjustFamilyGrid();
       <div>
         <label class="flabel">Credit Limit (₹)</label>
         <input class="finput" id="cc-limit" type="number" placeholder="e.g. 100000">
+      </div>
+      <div>
+        <label class="flabel">Billing Cycle Day 📅</label>
+        <input class="finput" id="cc-billing-day" type="number" min="1" max="28" placeholder="e.g. 12" style="max-width:120px;">
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:4px;">Har mahine is date se cycle shuru hoti hai (1–28)</div>
       </div>
       <div style="display:flex;gap:10px;margin-top:4px;">
         <button class="btn btn-outline" style="flex:1" onclick="closeCcCardModal()">Cancel</button>
