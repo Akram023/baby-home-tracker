@@ -4111,14 +4111,10 @@ function closeCcViewModal() {
 
 // ── Monthly Report ────────────────────
 let ccReportMonth  = new Date().toISOString().slice(0,7);
-let ccDashMonth   = (() => {
-  const now = new Date();
-  if(now.getDate() >= 12) {
-    const d = new Date(now.getFullYear(), now.getMonth()+1, 1);
-    return d.toISOString().slice(0,7);
-  }
-  return now.toISOString().slice(0,7);
-})();
+// ccDashMonth: always initialized to current cycle on page load
+// Will be recalculated with actual billingDay on first renderCreditCards() call
+let ccDashMonth = null; // null = "not yet set, use current cycle"
+let _ccDashMonthInitialized = false;
 function openCcReportModal() {
   renderCcReport();
   document.getElementById('ccReportModal').classList.add('open');
@@ -4231,36 +4227,55 @@ function ccExpInCycle(expDate, cycleEndMonth, billingDay) {
 }
 function ccCurrentCycleMonth(billingDay) {
   billingDay = billingDay || 12;
-  // If today >= billingDay, current cycle ends next month's billingDay
   const now = new Date();
-  if(now.getDate() >= billingDay) {
-    const d = new Date(now.getFullYear(), now.getMonth()+1, 1);
-    return d.toISOString().slice(0,7);
+  const todayDate = now.getDate();
+  // If today >= billingDay, active cycle ends NEXT month on billingDay
+  if(todayDate >= billingDay) {
+    // next month
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return nextMonth.getFullYear() + '-' + String(nextMonth.getMonth() + 1).padStart(2,'0');
   } else {
-    return now.toISOString().slice(0,7);
+    return now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2,'0');
   }
 }
 function ccDashPrevMonth() {
+  window._ccUserNavigated = true;
   const d = new Date(ccDashMonth + '-01');
   d.setMonth(d.getMonth() - 1);
   ccDashMonth = d.toISOString().slice(0,7);
   renderCreditCards();
 }
 function ccDashNextMonth() {
-  const nowCycle = ccCurrentCycleMonth();
+  const _fc = db.creditCards && db.creditCards.length ? db.creditCards[0] : null;
+  const _bd = _fc ? (_fc.billingDay || 12) : 12;
+  const nowCycle = ccCurrentCycleMonth(_bd);
   if(ccDashMonth >= nowCycle) return;
   const d = new Date(ccDashMonth + '-01');
   d.setMonth(d.getMonth() + 1);
   ccDashMonth = d.toISOString().slice(0,7);
+  if(ccDashMonth >= nowCycle) window._ccUserNavigated = false;
   renderCreditCards();
 }
 function ccDashToday() {
-  ccDashMonth = ccCurrentCycleMonth();
+  window._ccUserNavigated = false;
+  const _fc = db.creditCards && db.creditCards.length ? db.creditCards[0] : null;
+  const _bd = _fc ? (_fc.billingDay || 12) : 12;
+  ccDashMonth = ccCurrentCycleMonth(_bd);
   renderCreditCards();
 }
 function renderCreditCards() {
   if(!db.creditCards) db.creditCards = [];
   if(!db.ccExpenses)  db.ccExpenses  = [];
+
+  // Always compute current cycle using actual card billingDay
+  const _firstCard = db.creditCards && db.creditCards.length ? db.creditCards[0] : null;
+  const _actualBillingDay = _firstCard ? (_firstCard.billingDay || 12) : 12;
+  const _nowCycle = ccCurrentCycleMonth(_actualBillingDay);
+
+  // If user has NOT manually navigated back, always snap to current cycle
+  if(!window._ccUserNavigated) {
+    ccDashMonth = _nowCycle;
+  }
 
   // Billing Cycle Stats — 12th to 12th
   const { startStr, endStr } = ccGetCycleRange(ccDashMonth);
@@ -4280,8 +4295,10 @@ function renderCreditCards() {
     const s = new Date(dashStart), ex = new Date(dashEnd);
     mlEl.textContent = s.getDate()+' '+s.toLocaleDateString('en-IN',{month:'short'})+' – '+ex.getDate()+' '+ex.toLocaleDateString('en-IN',{month:'short',year:'numeric'});
   }
-  // Disable next button if current cycle
-  const nowCycle = ccCurrentCycleMonth();
+  // Disable next button if current cycle (use actual card billingDay)
+  const _nbfc = db.creditCards && db.creditCards.length ? db.creditCards[0] : null;
+  const _nbbd = _nbfc ? (_nbfc.billingDay || 12) : 12;
+  const nowCycle = ccCurrentCycleMonth(_nbbd);
   const nextBtn = document.getElementById('cc-next-btn');
   const todayBtn = document.getElementById('cc-today-btn');
   if(nextBtn)  nextBtn.style.opacity  = ccDashMonth >= nowCycle ? '0.3' : '1';
