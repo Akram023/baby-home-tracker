@@ -464,6 +464,7 @@ select.finput { cursor: pointer; }
 .item-type-btn[data-type="homec"].active   { background: var(--homec); border-color: var(--homec); }
 .item-type-btn[data-type="diapers"].active { background: var(--diapers); border-color: var(--diapers); }
 .item-type-btn[data-type="doctor"].active  { background: var(--medical); border-color: var(--medical); }
+.item-type-btn[data-type="shopping"].active { background: #f59e0b; border-color: #f59e0b; color: white; }
 .item-type-btn[data-type="custom"].active  { background: var(--muted); border-color: var(--muted); }
 /* Item entry row in list */
 .entry-row {
@@ -532,6 +533,8 @@ select.finput { cursor: pointer; }
   <div class="nav-tab" onclick="switchTab('panchayat')">🏛️ Panchayat</div>
   <div class="nav-tab" onclick="switchTab('loan')">💳 Loans</div>
   <div class="nav-tab" onclick="switchTab('creditcard')">💎 Credit Cards</div>
+  <div class="nav-tab" onclick="switchTab('investment')">📈 Investment</div>
+  <div class="nav-tab" onclick="switchTab('costperday')">🧾 Cost Per Day</div>
   <div class="nav-tab" onclick="switchTab('reports')">📊 Reports</div>
   <div class="nav-tab" onclick="switchTab('recycle')" id="recycle-tab">🗑️ Recycle <span id="recycle-count-badge" style="display:none;background:#d94f3d;color:white;border-radius:10px;padding:1px 6px;font-size:0.65rem;margin-left:4px;">0</span></div>
   <div class="nav-tab" onclick="switchTab('settings')">⚙️ Settings</div>
@@ -632,6 +635,21 @@ select.finput { cursor: pointer; }
         <div id="dash-medical-bar" class="cat-progress-bar" style="--cat-color:var(--medical);"></div>
       </div>
 
+      <!-- Baby Shopping -->
+      <div class="baby-cat-card" style="border-top-color:#f59e0b;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:1.2rem;">🛍️</span>
+          <div>
+            <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--muted2);">Shopping</div>
+            <div id="dash-shopping-total" style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:#b45309;">₹0</div>
+          </div>
+        </div>
+        <div style="font-size:0.68rem;color:var(--muted2);">Qty: <b id="dash-shopping-qty">0</b> pcs</div>
+        <div style="font-size:0.68rem;color:var(--muted2);">Purchases: <b id="dash-shopping-count">0</b></div>
+        <div style="font-size:0.68rem;color:var(--muted2);">Last: <b id="dash-shopping-last" style="color:#b45309;">—</b></div>
+        <div id="dash-shopping-bar" class="cat-progress-bar" style="--cat-color:#f59e0b;"></div>
+      </div>
+
     </div>
 
     <!-- Breakdown bar -->
@@ -666,6 +684,7 @@ select.finput { cursor: pointer; }
       <option value="diapers">🟢 Diapers</option>
       <option value="homec">🟣 Home Cerelac</option>
       <option value="doctor">🩺 Doctor Visit</option>
+      <option value="shopping">🛍️ Shopping</option>
       <option value="custom">✏️ Custom</option>
     </select>
   </div>
@@ -884,6 +903,423 @@ select.finput { cursor: pointer; }
 
 </div>
 
+
+<!-- ═══════════════════════════════════════
+     TAB: INVESTMENT
+═══════════════════════════════════════ -->
+<div class="page" id="page-investment">
+
+  <!-- ── HERO SUMMARY CARD ── -->
+  <div id="inv-hero" style="background:linear-gradient(135deg,#0a1628 0%,#0d2137 50%,#091a2e 100%);border-radius:16px;padding:22px 24px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.4);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(34,197,94,0.06);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-40px;left:40px;width:120px;height:120px;border-radius:50%;background:rgba(59,130,246,0.06);pointer-events:none;"></div>
+    <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(148,163,184,0.8);margin-bottom:6px;">📈 Total Portfolio Value</div>
+    <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
+      <div id="inv-total-val" style="font-family:'DM Serif Display',serif;font-size:2.4rem;color:#f0fdf4;line-height:1;">₹0</div>
+      <div style="padding-bottom:6px;">
+        <div id="inv-total-gain-badge" style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.3);border-radius:20px;padding:3px 12px;font-size:0.78rem;font-weight:700;">+₹0 (0%)</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;">
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Invested</div>
+        <div id="inv-total-invested" style="font-size:1.1rem;font-weight:700;color:#93c5fd;">₹0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Current Value</div>
+        <div id="inv-total-current" style="font-size:1.1rem;font-weight:700;color:#86efac;">₹0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">Total Gain/Loss</div>
+        <div id="inv-total-gain" style="font-size:1.1rem;font-weight:700;color:#4ade80;">₹0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">XIRR / Abs Returns</div>
+        <div id="inv-total-xirr" style="font-size:1.1rem;font-weight:700;color:#fbbf24;">0%</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">SIP Holdings</div>
+        <div id="inv-sip-count" style="font-size:1.1rem;font-weight:700;color:#a78bfa;">0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px;">ETF Holdings</div>
+        <div id="inv-etf-count" style="font-size:1.1rem;font-weight:700;color:#34d399;">0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TYPE FILTER TABS ── -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;">
+      <button id="inv-tab-all" class="inv-type-tab active" onclick="setInvTab('all')">All Investments</button>
+      <button id="inv-tab-sip" class="inv-type-tab" onclick="setInvTab('sip')">📅 SIP</button>
+      <button id="inv-tab-etf" class="inv-type-tab" onclick="setInvTab('etf')">📊 ETF / Stocks</button>
+      <button id="inv-tab-lumpsum" class="inv-type-tab" onclick="setInvTab('lumpsum')">💰 Lumpsum</button>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline btn-sm" onclick="exportInvestmentExcel()">📤 Export</button>
+      <button class="btn btn-primary" onclick="openInvModal()">＋ Add Investment</button>
+    </div>
+  </div>
+
+  <!-- ── HOLDINGS CARDS GRID ── -->
+  <div id="inv-holdings-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-bottom:20px;"></div>
+
+  <!-- ── SIP CALCULATOR ── -->
+  <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:16px;box-shadow:var(--card-shadow);">
+    <div style="font-family:'DM Serif Display',serif;font-size:1.1rem;margin-bottom:14px;display:flex;align-items:center;gap:8px;">🧮 SIP Calculator</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:12px;">
+      <div>
+        <label style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;">Monthly SIP (₹)</label>
+        <input class="finput" type="number" id="calc-sip-amt" value="5000" oninput="calcSIP()">
+      </div>
+      <div>
+        <label style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;">Duration (Years)</label>
+        <input class="finput" type="number" id="calc-sip-years" value="10" oninput="calcSIP()">
+      </div>
+      <div>
+        <label style="font-size:0.65rem;font-weight:700;color:var(--muted);text-transform:uppercase;display:block;margin-bottom:4px;">Expected Return (%)</label>
+        <input class="finput" type="number" id="calc-sip-rate" value="12" oninput="calcSIP()">
+      </div>
+    </div>
+    <div id="sip-calc-result" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;"></div>
+  </div>
+
+  <!-- ── TRANSACTIONS TABLE ── -->
+  <div class="sec-header">
+    <div class="sec-title">📋 Investment Transactions</div>
+    <input class="search-input" id="inv-search" placeholder="Search fund, ETF..." oninput="renderInvestment()" style="width:220px;">
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Type</th>
+          <th>Fund / ETF Name</th>
+          <th>Units / Qty</th>
+          <th>Buy Price (NAV)</th>
+          <th>Invested</th>
+          <th>Current NAV</th>
+          <th>Current Value</th>
+          <th>Gain / Loss</th>
+          <th>Returns</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="inv-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══ INVESTMENT ADD/EDIT MODAL ══ -->
+<div class="modal-overlay" id="invModal" onclick="if(event.target===this)closeInvModal()">
+  <div class="modal" style="max-width:560px;">
+    <div class="modal-header">
+      <div class="modal-title" id="invModalTitle">📈 Add Investment</div>
+      <button class="modal-close" onclick="closeInvModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Type selector -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:8px;">Investment Type</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="item-type-btn active" id="inv-type-sip" onclick="setInvType('sip')">📅 SIP</button>
+          <button class="item-type-btn" id="inv-type-etf" onclick="setInvType('etf')">📊 ETF</button>
+          <button class="item-type-btn" id="inv-type-lumpsum" onclick="setInvType('lumpsum')">💰 Lumpsum MF</button>
+          <button class="item-type-btn" id="inv-type-stock" onclick="setInvType('stock')">🏢 Stock</button>
+        </div>
+        <input type="hidden" id="inv_type" value="sip">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Fund / ETF / Stock Name *</label>
+          <input class="finput" id="inv_name" placeholder="e.g. Mirae Asset Large Cap, Nifty 50 ETF, HDFC Bank">
+        </div>
+        <div class="form-group" style="grid-column:span 2;" id="inv-platform-row">
+          <label class="flabel">Platform / Broker</label>
+          <input class="finput" id="inv_platform" placeholder="e.g. Zerodha, Groww, Kuvera, MF Central">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Date of Investment</label>
+          <input class="finput" type="date" id="inv_date">
+        </div>
+        <div class="form-group" id="inv-sip-date-row" style="display:none;">
+          <label class="flabel">SIP Date (monthly)</label>
+          <select class="finput" id="inv_sip_date">
+            <option value="">Select date</option>
+            ${[1,5,7,10,14,15,20,25,28].map(d=>`<option value="${d}">${d}th of every month</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="flabel" id="inv-qty-label">Units / Qty Purchased</label>
+          <input class="finput" type="number" id="inv_units" placeholder="e.g. 12.345" step="0.001" min="0" oninput="calcInvTotal()">
+        </div>
+        <div class="form-group">
+          <label class="flabel" id="inv-nav-label">Buy Price / NAV (₹)</label>
+          <input class="finput" type="number" id="inv_nav" placeholder="e.g. 85.50" step="0.01" min="0" oninput="calcInvTotal()">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Amount Invested (₹) <span style="font-size:0.6rem;color:var(--muted2);">auto</span></label>
+          <input class="finput" type="number" id="inv_invested" placeholder="Auto-calculated" step="0.01" oninput="calcInvUnits()">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Current NAV / Price (₹)</label>
+          <input class="finput" type="number" id="inv_current_nav" placeholder="e.g. 120.00" step="0.01" oninput="calcInvCurrentValue()">
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Current Value (₹) <span style="font-size:0.6rem;color:var(--muted2);">auto-calculated</span></label>
+          <input class="finput" type="number" id="inv_current_value" placeholder="Auto or enter manually" step="0.01">
+        </div>
+        <div class="form-group" id="inv-folio-row">
+          <label class="flabel">Folio / Account No.</label>
+          <input class="finput" id="inv_folio" placeholder="e.g. 1234567890">
+        </div>
+        <div class="form-group" id="inv-category-row">
+          <label class="flabel">Category / Sector</label>
+          <input class="finput" id="inv_category" placeholder="e.g. Large Cap, ELSS, Debt, Sectoral">
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Notes</label>
+          <input class="finput" id="inv_notes" placeholder="e.g. Long-term goal, tax saving, wealth creation">
+        </div>
+      </div>
+
+      <!-- Live P&L Preview -->
+      <div id="inv-pnl-preview" style="display:none;background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(59,130,246,0.06));border:1.5px solid rgba(34,197,94,0.2);border-radius:10px;padding:12px 14px;margin-top:12px;">
+        <div style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted2);margin-bottom:6px;">Live P&L Preview</div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:0.82rem;">
+          <div>Invested: <b id="prev-invested">—</b></div>
+          <div>Current: <b id="prev-current">—</b></div>
+          <div>Gain: <b id="prev-gain" style="color:var(--green);">—</b></div>
+          <div>Returns: <b id="prev-ret" style="color:var(--green);">—</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeInvModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInvestment()">💾 Save Investment</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.inv-type-tab {
+  padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border2);
+  background: var(--surface); color: var(--muted); font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.18s; font-family: 'DM Sans', sans-serif;
+}
+.inv-type-tab:hover { border-color: #3b82f6; color: #3b82f6; }
+.inv-type-tab.active { background: #1d4ed8; color: white; border-color: #1d4ed8; }
+.inv-holding-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 16px 18px; box-shadow: var(--card-shadow);
+  transition: all 0.2s; position: relative; overflow: hidden;
+}
+.inv-holding-card:hover { border-color: #3b82f6; transform: translateY(-2px); box-shadow: 0 6px 24px rgba(59,130,246,0.12); }
+.inv-holding-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+.inv-holding-card.etf::before { background: linear-gradient(90deg, #8b5cf6, #3b82f6); }
+.inv-holding-card.lumpsum::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.inv-holding-card.stock::before { background: linear-gradient(90deg, #10b981, #06b6d4); }
+.inv-gain-positive { color: #10b981; }
+.inv-gain-negative { color: #ef4444; }
+.inv-progress-track {
+  height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; margin-top: 10px;
+}
+.inv-progress-fill {
+  height: 100%; border-radius: 3px; transition: width 0.5s ease;
+  background: linear-gradient(90deg, #3b82f6, #10b981);
+}
+</style>
+
+<!-- ═══════════════════════════════════════
+     TAB: COST PER DAY TRACKER
+═══════════════════════════════════════ -->
+<div class="page" id="page-costperday">
+
+  <!-- ── HERO ── -->
+  <div style="background:linear-gradient(135deg,#0f172a,#1e1b4b 60%,#0f172a);border-radius:16px;padding:20px 24px;margin-bottom:16px;box-shadow:0 8px 32px rgba(0,0,0,0.45);position:relative;overflow:hidden;">
+    <div style="position:absolute;top:-40px;right:-30px;width:160px;height:160px;border-radius:50%;background:rgba(168,85,247,0.08);pointer-events:none;"></div>
+    <div style="font-size:0.6rem;text-transform:uppercase;letter-spacing:0.14em;color:rgba(148,163,184,0.7);margin-bottom:6px;">🧾 Purchase Cost Analyzer</div>
+    <div style="font-size:1.05rem;font-weight:700;color:#e2e8f0;margin-bottom:4px;">Aapki khareedari ka roz ka hisaab</div>
+    <div style="font-size:0.78rem;color:rgba(148,163,184,0.7);margin-bottom:16px;">Jitne din se use kar rahe ho, utna cost divide hoga — aur sasta lagega! 😄</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;" id="cpd-summary-row">
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.58rem;color:rgba(148,163,184,0.65);text-transform:uppercase;margin-bottom:3px;">Total Items</div>
+        <div id="cpd-total-items" style="font-size:1.2rem;font-weight:800;color:#c4b5fd;">0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.58rem;color:rgba(148,163,184,0.65);text-transform:uppercase;margin-bottom:3px;">Total Spent</div>
+        <div id="cpd-total-spent" style="font-size:1.2rem;font-weight:800;color:#93c5fd;">₹0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.58rem;color:rgba(148,163,184,0.65);text-transform:uppercase;margin-bottom:3px;">Avg Cost/Day</div>
+        <div id="cpd-avg-day" style="font-size:1.2rem;font-weight:800;color:#34d399;">₹0</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px;border:1px solid rgba(255,255,255,0.08);">
+        <div style="font-size:0.58rem;color:rgba(148,163,184,0.65);text-transform:uppercase;margin-bottom:3px;">Avg Cost/Month</div>
+        <div id="cpd-avg-month" style="font-size:1.2rem;font-weight:800;color:#fbbf24;">₹0</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FILTER + ADD ── -->
+  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;justify-content:space-between;">
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+      <input class="search-input" id="cpd-search" placeholder="🔍 Search item..." oninput="renderCostPerDay()" style="min-width:180px;">
+      <select class="finput" id="cpd-cat-filter" onchange="renderCostPerDay()" style="width:auto;min-width:140px;">
+        <option value="">All Categories</option>
+        <option value="electronics">📱 Electronics</option>
+        <option value="clothing">👕 Clothing</option>
+        <option value="appliance">🏠 Appliance</option>
+        <option value="vehicle">🚗 Vehicle</option>
+        <option value="furniture">🪑 Furniture</option>
+        <option value="health">💊 Health</option>
+        <option value="entertainment">🎮 Entertainment</option>
+        <option value="other">📦 Other</option>
+      </select>
+      <select class="finput" id="cpd-sort" onchange="renderCostPerDay()" style="width:auto;min-width:150px;">
+        <option value="date-desc">Newest First</option>
+        <option value="date-asc">Oldest First</option>
+        <option value="cpd-asc">Cheapest/Day</option>
+        <option value="cpd-desc">Costliest/Day</option>
+        <option value="price-desc">Highest Price</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-outline btn-sm" onclick="exportCPDExcel()">📤 Export</button>
+      <button class="btn btn-primary" onclick="openCPDModal()">＋ Add Item</button>
+    </div>
+  </div>
+
+  <!-- ── CARDS GRID ── -->
+  <div id="cpd-cards-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-bottom:20px;"></div>
+
+  <!-- ── TABLE VIEW ── -->
+  <details style="margin-bottom:16px;">
+    <summary style="cursor:pointer;font-size:0.8rem;font-weight:700;color:var(--muted);padding:10px 0;user-select:none;">📋 Table View (click to expand)</summary>
+    <div class="table-wrap" style="margin-top:10px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Category</th>
+            <th>Buy Date</th>
+            <th>Price Paid</th>
+            <th>Days Used</th>
+            <th>Cost / Day</th>
+            <th>Cost / Week</th>
+            <th>Cost / Month</th>
+            <th>Cost / Year</th>
+            <th>Value Score</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="cpd-tbody"></tbody>
+      </table>
+    </div>
+  </details>
+
+</div>
+
+<!-- ══ COST PER DAY MODAL ══ -->
+<div class="modal-overlay" id="cpdModal" onclick="if(event.target===this)closeCPDModal()">
+  <div class="modal" style="max-width:520px;">
+    <div class="modal-header">
+      <div class="modal-title" id="cpdModalTitle">🧾 Add Purchase Item</div>
+      <button class="modal-close" onclick="closeCPDModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Category pills -->
+      <div style="margin-bottom:14px;">
+        <label style="font-size:0.7rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;display:block;margin-bottom:8px;">Category</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;" id="cpd-cat-btns">
+          <button class="item-type-btn active" data-cat="electronics" onclick="setCPDCat('electronics')">📱 Electronics</button>
+          <button class="item-type-btn" data-cat="clothing" onclick="setCPDCat('clothing')">👕 Clothing</button>
+          <button class="item-type-btn" data-cat="appliance" onclick="setCPDCat('appliance')">🏠 Appliance</button>
+          <button class="item-type-btn" data-cat="vehicle" onclick="setCPDCat('vehicle')">🚗 Vehicle</button>
+          <button class="item-type-btn" data-cat="furniture" onclick="setCPDCat('furniture')">🪑 Furniture</button>
+          <button class="item-type-btn" data-cat="health" onclick="setCPDCat('health')">💊 Health</button>
+          <button class="item-type-btn" data-cat="entertainment" onclick="setCPDCat('entertainment')">🎮 Entertainment</button>
+          <button class="item-type-btn" data-cat="other" onclick="setCPDCat('other')">📦 Other</button>
+        </div>
+        <input type="hidden" id="cpd_cat" value="electronics">
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Item Name *</label>
+          <input class="finput" id="cpd_name" placeholder="e.g. iPhone 15, Samsung TV, Laptop..." oninput="calcCPDPreview()">
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Brand / Model</label>
+          <input class="finput" id="cpd_brand" placeholder="e.g. Apple, Samsung, Whirlpool">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Purchase Date *</label>
+          <input class="finput" type="date" id="cpd_date" oninput="calcCPDPreview()">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Price Paid (₹) *</label>
+          <input class="finput" type="number" id="cpd_price" placeholder="e.g. 10000" oninput="calcCPDPreview()">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Expected Life (years)</label>
+          <input class="finput" type="number" id="cpd_life" placeholder="e.g. 3" step="0.5" oninput="calcCPDPreview()">
+        </div>
+        <div class="form-group">
+          <label class="flabel">Where Bought</label>
+          <input class="finput" id="cpd_shop" placeholder="e.g. Amazon, Flipkart, Local">
+        </div>
+        <div class="form-group" style="grid-column:span 2;">
+          <label class="flabel">Notes</label>
+          <input class="finput" id="cpd_notes" placeholder="e.g. EMI purchase, warranty 1yr, gifted">
+        </div>
+      </div>
+
+      <!-- Live Preview -->
+      <div id="cpd-live-preview" style="display:none;margin-top:14px;background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(59,130,246,0.06));border:1.5px solid rgba(168,85,247,0.25);border-radius:12px;padding:14px 16px;">
+        <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.1em;color:rgba(196,181,253,0.8);margin-bottom:10px;">⚡ Live Cost Breakdown</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;" id="cpd-preview-grid"></div>
+        <div id="cpd-value-msg" style="margin-top:10px;font-size:0.78rem;text-align:center;font-weight:700;padding:6px;border-radius:8px;"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeCPDModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCPDItem()">💾 Save Item</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.cpd-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.cpd-card:hover { border-color: #a855f7; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(168,85,247,0.13); }
+.cpd-card-top-bar { position:absolute;top:0;left:0;right:0;height:4px; }
+.cpd-cost-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.cpd-score-bar-track { height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-top:2px; }
+.cpd-score-bar-fill  { height:100%;border-radius:3px;transition:width 0.5s; }
+</style>
+
 <!-- ═══════════════════════════════════════
      TAB: REPORTS (redesigned per-tab)
 ═══════════════════════════════════════ -->
@@ -1030,6 +1466,7 @@ select.finput { cursor: pointer; }
           <button class="item-type-btn" data-type="homec" onclick="setItemType('homec')">🟣 Home Cerelac</button>
           <button class="item-type-btn" data-type="diapers" onclick="setItemType('diapers')">🟢 Diapers</button>
           <button class="item-type-btn" data-type="doctor" onclick="setItemType('doctor')">🩺 Doctor Visit</button>
+          <button class="item-type-btn" data-type="shopping" onclick="setItemType('shopping')">🛍️ Shopping</button>
           <button class="item-type-btn" data-type="custom" onclick="setItemType('custom')">✏️ Custom</button>
         </div>
       </div>
@@ -1649,14 +2086,17 @@ let db = {
   familySend: [],
   panchayat: [],
   loans: [],
-  creditCards: [],      // 💎 Credit Card data
-  ccExpenses: [],       // 💎 Per-card expenses
+  creditCards: [],
+  ccExpenses: [],
   familySettings: null,
   deposit: null,
-  rooms: [],            // 🏠 Multi-room support
-  recycleBin: []  // ♻️ Recycle Bin — saved here before every delete
+  rooms: [],
+  shopping: [],
+  investments: [],
+  costItems: [],        // 🧾 Cost Per Day tracker
+  recycleBin: []
 };
-let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1, room:1 };
+let nextId = { baby:1, rent:1, familySend:1, panchayat:1, loan:1, repay:1, cc:1, ccExp:1, room:1, shopping:1, inv:1, cpd:1 };
 // Expose to global for Firebase module
 window.db = db;
 window.nextId = nextId;
@@ -1755,7 +2195,7 @@ function switchTab(tab) {
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
   const pageEl = document.getElementById('page-'+tab);
   if(pageEl) pageEl.classList.add('active');
-  const tabs = ['baby','rent','family','panchayat','loan','creditcard','reports','recycle','settings'];
+  const tabs = ['baby','rent','family','panchayat','loan','creditcard','investment','costperday','reports','recycle','settings'];
   const idx = tabs.indexOf(tab);
   if(idx >= 0) document.querySelectorAll('.nav-tab')[idx].classList.add('active');
   if(tab==='baby')      { renderBabyStats(); renderBaby(); updateBabyFilterMonths(); }
@@ -1764,6 +2204,8 @@ function switchTab(tab) {
   if(tab==='panchayat') { renderPanchayat(); renderPanchayatStats(); updatePanchayatFilterMonths(); }
   if(tab==='loan')      { renderLoanStats(); renderLoans(); }
   if(tab==='creditcard'){ renderCreditCards(); }
+  if(tab==='investment') { renderInvestment(); }
+  if(tab==='costperday') { renderCostPerDay(); }
   if(tab==='reports')   { renderReportSummaries(); }
   if(tab==='recycle')   { renderRecycleBin(); }
   if(tab==='settings')  { updateSettingsDbStatus(); }
@@ -1806,8 +2248,9 @@ const ITEM_CONFIG = {
   cerelac: { label:'🟡 Cerelac',       color:'#e8a44a',        qtyLabel:'Qty (Pieces)',    qtyUnit:'pcs',  hasBrand:true,  hasGram:true,  hasVisit:false },
   homec:   { label:'🟣 Home Cerelac',  color:'var(--homec)',   qtyLabel:'Qty (Pieces)',    qtyUnit:'pcs',  hasBrand:true,  hasGram:false, hasVisit:false },
   diapers: { label:'🟢 Diapers',       color:'var(--diapers)', qtyLabel:'Qty (Pieces)',    qtyUnit:'pcs',  hasBrand:false, hasGram:false, hasVisit:false },
-  doctor:  { label:'🩺 Doctor Visit',  color:'var(--medical)', qtyLabel:'Visit Count',     qtyUnit:'visit',hasBrand:false, hasGram:false, hasVisit:true  },
-  custom:  { label:'✏️ Custom Item',   color:'var(--muted)',   qtyLabel:'Qty',             qtyUnit:'',     hasBrand:false, hasGram:false, hasVisit:false }
+  doctor:   { label:'🩺 Doctor Visit',  color:'var(--medical)', qtyLabel:'Visit Count',     qtyUnit:'visit',hasBrand:false, hasGram:false, hasVisit:true  },
+  shopping: { label:'🛍️ Shopping',      color:'#f59e0b',        qtyLabel:'Qty (Pieces)',    qtyUnit:'pcs',  hasBrand:true,  hasGram:false, hasVisit:false },
+  custom:   { label:'✏️ Custom Item',   color:'var(--muted)',   qtyLabel:'Qty',             qtyUnit:'',     hasBrand:false, hasGram:false, hasVisit:false }
 };
 
 function setItemType(type) {
@@ -1815,6 +2258,15 @@ function setItemType(type) {
   document.querySelectorAll('.item-type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
   renderItemForm(type);
   checkGapOnDateChange();
+}
+
+function setShopSubCat(cat) {
+  const el = document.getElementById('if_shopcat');
+  if(el) el.value = cat;
+  ['toy','cloth','book','gear','other'].forEach(c => {
+    const btn = document.getElementById('scat_'+c);
+    if(btn) btn.classList.toggle('active', c === cat);
+  });
 }
 
 function renderItemForm(type) {
@@ -1826,15 +2278,33 @@ function renderItemForm(type) {
   area.innerHTML = `
     <div style="font-size:0.72rem;font-weight:700;color:${cfg.color};text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">${cfg.label}</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      ${type === 'shopping' ? `
+      <div class="form-group" style="grid-column:span 2;">
+        <label>Shopping Category</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;">
+          <button type="button" class="item-type-btn active" id="scat_toy" onclick="setShopSubCat('toy')" style="font-size:0.7rem;padding:4px 10px;">🧸 Toy</button>
+          <button type="button" class="item-type-btn" id="scat_cloth" onclick="setShopSubCat('cloth')" style="font-size:0.7rem;padding:4px 10px;">👕 Clothing</button>
+          <button type="button" class="item-type-btn" id="scat_book" onclick="setShopSubCat('book')" style="font-size:0.7rem;padding:4px 10px;">📚 Book</button>
+          <button type="button" class="item-type-btn" id="scat_gear" onclick="setShopSubCat('gear')" style="font-size:0.7rem;padding:4px 10px;">🍼 Gear</button>
+          <button type="button" class="item-type-btn" id="scat_other" onclick="setShopSubCat('other')" style="font-size:0.7rem;padding:4px 10px;">✏️ Other</button>
+        </div>
+        <input type="hidden" id="if_shopcat" value="toy">
+      </div>` : ''}
       ${showBrand ? `
       <div class="form-group" style="grid-column:span 2;">
-        <label>${type==='custom'?'Item Name *':'Brand / Description'}</label>
+        <label>${type==='custom'?'Item Name *': type==='shopping'?'Item Name / Brand':'Brand / Description'}</label>
         <input type="text" id="if_brand" class="finput" placeholder="${
-          type==='milk'    ?'e.g. Aptamil 800g, Nan 400g, Enfamil' :
-          type==='cerelac' ?'e.g. Nestlé Cerelac Stage 1, 350g' :
-          type==='homec'   ?'e.g. Homemade cerelac brand/type' :
-                            'e.g. Vitamin drops, Lotion, Medicine...'
+          type==='milk'     ?'e.g. Aptamil 800g, Nan 400g, Enfamil' :
+          type==='cerelac'  ?'e.g. Nestlé Cerelac Stage 1, 350g' :
+          type==='homec'    ?'e.g. Homemade cerelac brand/type' :
+          type==='shopping' ?'e.g. Rattle set, Bodysuit 3-6M, Story Book...' :
+                             'e.g. Vitamin drops, Lotion, Medicine...'
         }">
+      </div>` : ''}
+      ${type === 'shopping' ? `
+      <div class="form-group" style="grid-column:span 2;">
+        <label>Platform / Shop</label>
+        <input type="text" id="if_shopplatform" class="finput" placeholder="e.g. Amazon, FirstCry, Local Market">
       </div>` : ''}
       ${cfg.hasGram ? `
       <div class="form-group">
@@ -1875,9 +2345,10 @@ function renderItemForm(type) {
         <input type="text" id="if_desc" class="finput" placeholder="${
           type==='milk'   ?'e.g. Opened 5th, finished in 22 days' :
           type==='cerelac'?'e.g. Stage 2, baby liked it' :
-          type==='diapers'?'e.g. Size M, Pampers brand' :
-          type==='doctor' ?'Reason for visit, diagnosis, prescription' :
-                           'Any notes or details'
+          type==='diapers'  ?'e.g. Size M, Pampers brand' :
+          type==='doctor'   ?'Reason for visit, diagnosis, prescription' :
+          type==='shopping' ?'e.g. Age 0-6M, Size S, gifted by grandma' :
+                             'Any notes or details'
         }">
       </div>
     </div>`;
@@ -1969,10 +2440,13 @@ function addItemToList() {
   const clinic = document.getElementById('if_clinic')?.value.trim()||'';
   const desc   = document.getElementById('if_desc')?.value.trim()||'';
   const qtyUnit = currentQtyUnit; // 'pcs' or 'gm'
+  const shopcat = document.getElementById('if_shopcat')?.value||'toy';
+  const shopplatform = document.getElementById('if_shopplatform')?.value.trim()||'';
 
   const cost = totalCost || (qty * unitCost);
   if(!cost && type !== 'doctor') { showToast('❌ Cost is required!'); return; }
   if(type==='custom' && !brand) { showToast('❌ Item name required!'); return; }
+  if(type==='shopping' && !brand) { showToast('❌ Item name required!'); return; }
 
   // Calculate gap for THIS specific item type only (separate per type)
   const lastDate = getLastDateForType(type, true); // exclude current session for this calc
@@ -1987,13 +2461,22 @@ function addItemToList() {
   const entry = {
     _id: entryCounter,
     type, date: dateVal, brand, gram, qty, qtyUnit, unitCost, cost,
-    doctor, clinic, desc, gap
+    doctor, clinic, desc, gap, shopcat, shopplatform
   };
   currentEntries.push(entry);
   renderEntryList();
 
+  // Reset "Update Item" button back to normal if it was in edit mode
+  const addBtn = document.querySelector('[onclick="addItemToList()"]');
+  if(addBtn && addBtn._originalText) {
+    addBtn.textContent = addBtn._originalText;
+    addBtn.style.background = '';
+    addBtn._originalText = null;
+  }
+  document.querySelectorAll('.entry-row').forEach(r=>r.style.outline='');
+
   // Reset form fields (keep date & type)
-  ['if_brand','if_gram','if_unit_cost','if_total_cost','if_doctor','if_clinic','if_desc'].forEach(id=>{
+  ['if_brand','if_gram','if_unit_cost','if_total_cost','if_doctor','if_clinic','if_desc','if_shopplatform'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   const qtyEl = document.getElementById('if_qty'); if(qtyEl) qtyEl.value='1';
@@ -2028,15 +2511,20 @@ function renderEntryList() {
       e.qty   ? `×${e.qty} ${unitStr}` : '',
       e.doctor? `👨‍⚕️ ${e.doctor}` : '',
       e.clinic? `🏥 ${e.clinic}` : '',
+      e.shopcat ? `[${e.shopcat}]` : '',
+      e.shopplatform ? `🛒${e.shopplatform}` : '',
       e.desc  ? e.desc : ''
     ].filter(Boolean).join(' · ');
-    return `<div class="entry-row">
+    return `<div class="entry-row" id="entry-row-${e._id}">
       <span class="entry-row-type" style="color:${cfg.color};font-size:0.75rem;">${cfg.label}</span>
       <span class="entry-row-detail" style="font-size:0.76rem;">${detail||'—'}</span>
       ${gapBadge}
       <span style="font-size:0.68rem;color:var(--muted2);">${e.date?fmtDate(e.date):''}</span>
       <span class="entry-row-cost">${fmtCurrency(e.cost)}</span>
-      <button class="btn btn-red btn-sm" onclick="removeEntry(${e._id})" style="padding:3px 8px;">✕</button>
+      <div style="display:flex;gap:4px;">
+        <button class="btn btn-outline btn-sm" onclick="editEntry(${e._id})" style="padding:3px 8px;" title="Edit this item">✏️</button>
+        <button class="btn btn-red btn-sm" onclick="removeEntry(${e._id})" style="padding:3px 8px;" title="Remove this item">✕</button>
+      </div>
     </div>`;
   }).join('');
 
@@ -2051,6 +2539,72 @@ function removeEntry(id) {
     const noMsg = document.getElementById('no-items-msg');
     if(noMsg) noMsg.style.display='block';
   }
+}
+
+function editEntry(id) {
+  const entry = currentEntries.find(e=>e._id===id);
+  if(!entry) return;
+
+  // Switch to the entry's item type
+  setItemType(entry.type);
+  document.querySelectorAll('.item-type-btn').forEach(b=>b.classList.toggle('active', b.dataset.type===entry.type));
+
+  // Set date
+  const dateEl = document.getElementById('be_date');
+  if(dateEl && entry.date) dateEl.value = entry.date;
+
+  // Fill in form fields after renderItemForm runs
+  setTimeout(()=>{
+    const ifBrand = document.getElementById('if_brand');
+    const ifGram  = document.getElementById('if_gram');
+    const ifQty   = document.getElementById('if_qty');
+    const ifUnit  = document.getElementById('if_unit_cost');
+    const ifTotal = document.getElementById('if_total_cost');
+    const ifDoctor= document.getElementById('if_doctor');
+    const ifClinic= document.getElementById('if_clinic');
+    const ifDesc  = document.getElementById('if_desc');
+
+    if(ifBrand)  ifBrand.value  = entry.brand||'';
+    if(ifGram)   ifGram.value   = entry.gram||'';
+    if(ifQty)    ifQty.value    = entry.qty||1;
+    if(ifUnit)   ifUnit.value   = entry.unitCost||'';
+    if(ifTotal)  ifTotal.value  = entry.cost||'';
+    if(ifDoctor) ifDoctor.value = entry.doctor||'';
+    if(ifClinic) ifClinic.value = entry.clinic||'';
+    if(ifDesc)   ifDesc.value   = entry.desc||'';
+
+    // Restore shopping-specific fields
+    if(entry.type === 'shopping') {
+      setTimeout(()=>{
+        const scEl = document.getElementById('if_shopcat');
+        if(scEl) scEl.value = entry.shopcat||'toy';
+        if(entry.shopcat) setShopSubCat(entry.shopcat);
+        const spEl = document.getElementById('if_shopplatform');
+        if(spEl) spEl.value = entry.shopplatform||'';
+      }, 80);
+    }
+
+    // Set qty unit
+    currentQtyUnit = entry.qtyUnit||'pcs';
+    updateQtyUnitUI();
+
+    // Highlight the row being edited
+    document.querySelectorAll('.entry-row').forEach(r=>r.style.outline='');
+    const rowEl = document.getElementById('entry-row-'+id);
+    if(rowEl) rowEl.style.outline='2px dashed var(--accent)';
+
+    // Show a notice
+    const addBtn = document.querySelector('[onclick="addItemToList()"]');
+    if(addBtn) {
+      addBtn._originalText = addBtn.textContent;
+      addBtn.textContent = '✅ Update Item';
+      addBtn.style.background = 'var(--green)';
+    }
+  }, 50);
+
+  // Remove the entry so it can be re-added (edited version)
+  currentEntries = currentEntries.filter(e=>e._id!==id);
+  renderEntryList();
 }
 
 // ── Keep these for backward compat (old data had these fields) ──
@@ -2118,6 +2672,7 @@ function saveBabyEntry() {
   const homecCost    = items.filter(i=>i.type==='homec').reduce((s,i)=>s+i.cost,0);
   const diapersCost  = items.filter(i=>i.type==='diapers').reduce((s,i)=>s+i.cost,0);
   const medicalCost  = items.filter(i=>i.type==='doctor'||i.type==='custom').reduce((s,i)=>s+i.cost,0);
+  const shoppingCost = items.filter(i=>i.type==='shopping').reduce((s,i)=>s+i.cost,0);
   const cerelacItem  = items.find(i=>i.type==='cerelac');
   const total = items.reduce((s,i)=>s+i.cost,0);
 
@@ -2186,8 +2741,9 @@ function renderBabyStats() {
   const customItems = allItems.filter(i=>i.type==='custom');
   medical.total += customItems.reduce((s,i)=>s+(i.cost||0),0);
   medical.count += customItems.length;
+  const shopping = catStats('shopping');
 
-  const grandTotal = milk.total + cerelac.total + diapers.total + homec.total + medical.total;
+  const grandTotal = milk.total + cerelac.total + diapers.total + homec.total + medical.total + shopping.total;
 
   // Grand total card
   const el = id => document.getElementById(id);
@@ -2224,14 +2780,16 @@ function renderBabyStats() {
   setCard('diapers', diapers, 'var(--diapers)');
   setCard('homec',   homec,   'var(--homec)');
   setCard('medical', medical, 'var(--medical)');
+  setCard('shopping', shopping, '#f59e0b');
 
   // Breakdown bar
   const cats = [
-    { key:'milk',    label:'🥛 Milk',        color:'var(--milk)',    val: milk.total },
-    { key:'cerelac', label:'🟡 Cerelac',      color:'#e8a44a',       val: cerelac.total },
-    { key:'diapers', label:'🟢 Diapers',      color:'var(--diapers)',val: diapers.total },
-    { key:'homec',   label:'🟣 Home Cer',     color:'var(--homec)',  val: homec.total },
-    { key:'medical', label:'🩺 Medical',      color:'var(--medical)',val: medical.total },
+    { key:'milk',     label:'🥛 Milk',        color:'var(--milk)',    val: milk.total },
+    { key:'cerelac',  label:'🟡 Cerelac',      color:'#e8a44a',       val: cerelac.total },
+    { key:'diapers',  label:'🟢 Diapers',      color:'var(--diapers)',val: diapers.total },
+    { key:'homec',    label:'🟣 Home Cer',     color:'var(--homec)',  val: homec.total },
+    { key:'medical',  label:'🩺 Medical',      color:'var(--medical)',val: medical.total },
+    { key:'shopping', label:'🛍️ Shopping',     color:'#f59e0b',       val: shopping.total },
   ].filter(c=>c.val>0);
 
   const breakBar = el('baby-breakdown-bar');
@@ -2388,6 +2946,804 @@ function deleteItemEntry(entryId, type, date) {
   }
   saveData(); renderBabyStats(); renderBaby(); updateBabyFilterMonths();
   showToast('🗑️ Moved to Recycle Bin. Restore anytime!');
+}
+
+// ═══════════════════════════════════════
+// INVESTMENT — SIP / ETF / STOCKS
+// ═══════════════════════════════════════
+
+let currentInvTab = 'all';
+let editInvId = null;
+let currentInvType = 'sip';
+
+const INV_TYPE_CONFIG = {
+  sip:     { label:'📅 SIP',          color:'#3b82f6', bg:'rgba(59,130,246,0.12)' },
+  etf:     { label:'📊 ETF',          color:'#8b5cf6', bg:'rgba(139,92,246,0.12)' },
+  lumpsum: { label:'💰 Lumpsum MF',   color:'#f59e0b', bg:'rgba(245,158,11,0.12)' },
+  stock:   { label:'🏢 Stock',        color:'#10b981', bg:'rgba(16,185,129,0.12)' },
+};
+
+function setInvTab(tab) {
+  currentInvTab = tab;
+  document.querySelectorAll('.inv-type-tab').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('inv-tab-' + tab);
+  if(el) el.classList.add('active');
+  renderInvestment();
+}
+
+function setInvType(type) {
+  currentInvType = type;
+  document.getElementById('inv_type').value = type;
+  ['sip','etf','lumpsum','stock'].forEach(t => {
+    const btn = document.getElementById('inv-type-' + t);
+    if(btn) btn.classList.toggle('active', t === type);
+  });
+  // Show/hide SIP-specific field
+  const sipDateRow = document.getElementById('inv-sip-date-row');
+  if(sipDateRow) sipDateRow.style.display = (type === 'sip') ? '' : 'none';
+  // Update labels
+  const qtyLabel  = document.getElementById('inv-qty-label');
+  const navLabel  = document.getElementById('inv-nav-label');
+  if(qtyLabel) qtyLabel.textContent = (type === 'stock') ? 'Shares Qty' : 'Units Purchased';
+  if(navLabel) navLabel.textContent = (type === 'stock') ? 'Buy Price (₹)' : 'Buy NAV / Price (₹)';
+  calcInvCurrentValue();
+}
+
+function calcInvTotal() {
+  const units = parseFloat(document.getElementById('inv_units')?.value) || 0;
+  const nav   = parseFloat(document.getElementById('inv_nav')?.value)   || 0;
+  if(units && nav) {
+    document.getElementById('inv_invested').value = (units * nav).toFixed(2);
+  }
+  calcInvCurrentValue();
+}
+
+function calcInvUnits() {
+  const invested = parseFloat(document.getElementById('inv_invested')?.value) || 0;
+  const nav      = parseFloat(document.getElementById('inv_nav')?.value)      || 0;
+  if(invested && nav) {
+    document.getElementById('inv_units').value = (invested / nav).toFixed(4);
+  }
+  calcInvCurrentValue();
+}
+
+function calcInvCurrentValue() {
+  const units       = parseFloat(document.getElementById('inv_units')?.value)       || 0;
+  const currentNav  = parseFloat(document.getElementById('inv_current_nav')?.value) || 0;
+  if(units && currentNav) {
+    const cv = units * currentNav;
+    document.getElementById('inv_current_value').value = cv.toFixed(2);
+  }
+  updateInvPreview();
+}
+
+function updateInvPreview() {
+  const invested = parseFloat(document.getElementById('inv_invested')?.value)      || 0;
+  const current  = parseFloat(document.getElementById('inv_current_value')?.value) || 0;
+  const preview  = document.getElementById('inv-pnl-preview');
+  if(!preview) return;
+  if(invested > 0 && current > 0) {
+    preview.style.display = '';
+    const gain = current - invested;
+    const ret  = ((gain / invested) * 100).toFixed(2);
+    document.getElementById('prev-invested').textContent = fmtCurrency(invested);
+    document.getElementById('prev-current').textContent  = fmtCurrency(current);
+    const gainEl = document.getElementById('prev-gain');
+    const retEl  = document.getElementById('prev-ret');
+    gainEl.textContent = (gain >= 0 ? '+' : '') + fmtCurrency(gain);
+    gainEl.style.color = gain >= 0 ? '#10b981' : '#ef4444';
+    retEl.textContent  = (gain >= 0 ? '+' : '') + ret + '%';
+    retEl.style.color  = gain >= 0 ? '#10b981' : '#ef4444';
+  } else {
+    preview.style.display = 'none';
+  }
+}
+
+function openInvModal(id = null) {
+  editInvId = id;
+  document.getElementById('invModalTitle').textContent = id ? '✏️ Edit Investment' : '📈 Add Investment';
+  const today = new Date().toISOString().slice(0, 10);
+
+  // Reset
+  ['inv_name','inv_platform','inv_folio','inv_category','inv_notes'].forEach(f => {
+    const el = document.getElementById(f); if(el) el.value = '';
+  });
+  ['inv_units','inv_nav','inv_invested','inv_current_nav','inv_current_value'].forEach(f => {
+    const el = document.getElementById(f); if(el) el.value = '';
+  });
+  document.getElementById('inv_date').value = today;
+  document.getElementById('inv_sip_date').value = '';
+  document.getElementById('inv-pnl-preview').style.display = 'none';
+  setInvType('sip');
+
+  if(id) {
+    const r = (db.investments || []).find(x => x.id === id);
+    if(r) {
+      setInvType(r.type || 'sip');
+      document.getElementById('inv_name').value          = r.name || '';
+      document.getElementById('inv_platform').value      = r.platform || '';
+      document.getElementById('inv_date').value          = r.date || today;
+      document.getElementById('inv_sip_date').value      = r.sipDate || '';
+      document.getElementById('inv_units').value         = r.units || '';
+      document.getElementById('inv_nav').value           = r.nav || '';
+      document.getElementById('inv_invested').value      = r.invested || '';
+      document.getElementById('inv_current_nav').value   = r.currentNav || '';
+      document.getElementById('inv_current_value').value = r.currentValue || '';
+      document.getElementById('inv_folio').value         = r.folio || '';
+      document.getElementById('inv_category').value      = r.category || '';
+      document.getElementById('inv_notes').value         = r.notes || '';
+      updateInvPreview();
+    }
+  }
+  document.getElementById('invModal').classList.add('open');
+}
+
+function closeInvModal() {
+  document.getElementById('invModal').classList.remove('open');
+}
+
+function saveInvestment() {
+  const name     = document.getElementById('inv_name').value.trim();
+  const invested = parseFloat(document.getElementById('inv_invested').value) || 0;
+  if(!name)     { showToast('❌ Fund / ETF name is required!'); return; }
+  if(!invested) { showToast('❌ Amount invested is required!'); return; }
+
+  if(!db.investments) db.investments = [];
+
+  const entry = {
+    id:           editInvId || nextId.inv++,
+    type:         document.getElementById('inv_type').value || 'sip',
+    name,
+    platform:     document.getElementById('inv_platform').value.trim(),
+    date:         document.getElementById('inv_date').value,
+    sipDate:      document.getElementById('inv_sip_date').value,
+    units:        parseFloat(document.getElementById('inv_units').value) || 0,
+    nav:          parseFloat(document.getElementById('inv_nav').value) || 0,
+    invested,
+    currentNav:   parseFloat(document.getElementById('inv_current_nav').value) || 0,
+    currentValue: parseFloat(document.getElementById('inv_current_value').value) || invested,
+    folio:        document.getElementById('inv_folio').value.trim(),
+    category:     document.getElementById('inv_category').value.trim(),
+    notes:        document.getElementById('inv_notes').value.trim(),
+  };
+
+  if(editInvId) {
+    const idx = db.investments.findIndex(x => x.id === editInvId);
+    if(idx !== -1) db.investments[idx] = entry;
+  } else {
+    db.investments.push(entry);
+  }
+
+  saveData();
+  closeInvModal();
+  renderInvestment();
+  showToast('✅ Investment saved!');
+}
+
+function deleteInvestment(id) {
+  if(!confirm('Delete this investment record?')) return;
+  db.investments = (db.investments || []).filter(x => x.id !== id);
+  saveData();
+  renderInvestment();
+  showToast('🗑️ Deleted!');
+}
+
+// ── SIP Calculator ──
+function calcSIP() {
+  const P   = parseFloat(document.getElementById('calc-sip-amt')?.value)   || 0;
+  const Y   = parseFloat(document.getElementById('calc-sip-years')?.value) || 0;
+  const r   = (parseFloat(document.getElementById('calc-sip-rate')?.value) || 0) / 100 / 12;
+  const n   = Y * 12;
+  const el  = document.getElementById('sip-calc-result');
+  if(!el || !P || !Y) return;
+
+  const fv = r > 0 ? P * ((Math.pow(1 + r, n) - 1) / r) * (1 + r) : P * n;
+  const invested = P * n;
+  const gain  = fv - invested;
+  const wealthRatio = fv / invested;
+
+  el.innerHTML = `
+    <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);border-radius:10px;padding:10px 14px;text-align:center;">
+      <div style="font-size:0.6rem;color:var(--muted2);text-transform:uppercase;margin-bottom:3px;">Total Invested</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#93c5fd;">${fmtCurrency(invested)}</div>
+    </div>
+    <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:10px;padding:10px 14px;text-align:center;">
+      <div style="font-size:0.6rem;color:var(--muted2);text-transform:uppercase;margin-bottom:3px;">Est. Returns</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#4ade80;">${fmtCurrency(Math.round(gain))}</div>
+    </div>
+    <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:10px;padding:10px 14px;text-align:center;">
+      <div style="font-size:0.6rem;color:var(--muted2);text-transform:uppercase;margin-bottom:3px;">Maturity Value</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#fbbf24;">${fmtCurrency(Math.round(fv))}</div>
+    </div>
+    <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.25);border-radius:10px;padding:10px 14px;text-align:center;">
+      <div style="font-size:0.6rem;color:var(--muted2);text-transform:uppercase;margin-bottom:3px;">Wealth Ratio</div>
+      <div style="font-size:1.1rem;font-weight:700;color:#c4b5fd;">${wealthRatio.toFixed(2)}x</div>
+    </div>`;
+}
+
+// ── Main render ──
+function renderInvestment() {
+  if(!db.investments) db.investments = [];
+
+  const search = (document.getElementById('inv-search')?.value || '').toLowerCase();
+  let rows = db.investments.filter(r => {
+    if(currentInvTab !== 'all' && r.type !== currentInvTab) return false;
+    if(search) {
+      const hay = [r.name, r.platform, r.category, r.notes].join(' ').toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  }).sort((a,b) => (b.date || '').localeCompare(a.date || ''));
+
+  const allInv = db.investments;
+
+  // ── Hero stats ──
+  const totalInvested     = allInv.reduce((s,r) => s + (r.invested || 0), 0);
+  const totalCurrentValue = allInv.reduce((s,r) => s + (r.currentValue || r.invested || 0), 0);
+  const totalGain         = totalCurrentValue - totalInvested;
+  const totalGainPct      = totalInvested > 0 ? ((totalGain / totalInvested) * 100).toFixed(2) : 0;
+  const sipCount          = allInv.filter(r => r.type === 'sip').length;
+  const etfCount          = allInv.filter(r => r.type === 'etf' || r.type === 'stock').length;
+
+  document.getElementById('inv-total-val').textContent      = fmtCurrency(totalCurrentValue);
+  document.getElementById('inv-total-invested').textContent  = fmtCurrency(totalInvested);
+  document.getElementById('inv-total-current').textContent   = fmtCurrency(totalCurrentValue);
+  document.getElementById('inv-total-gain').textContent      = (totalGain >= 0 ? '+' : '') + fmtCurrency(totalGain);
+  document.getElementById('inv-total-gain').style.color      = totalGain >= 0 ? '#4ade80' : '#f87171';
+  document.getElementById('inv-total-xirr').textContent      = (totalGainPct >= 0 ? '+' : '') + totalGainPct + '%';
+  document.getElementById('inv-total-xirr').style.color      = totalGainPct >= 0 ? '#fbbf24' : '#f87171';
+  document.getElementById('inv-sip-count').textContent       = sipCount;
+  document.getElementById('inv-etf-count').textContent       = etfCount;
+
+  const badge = document.getElementById('inv-total-gain-badge');
+  badge.textContent = (totalGain >= 0 ? '+' : '') + fmtCurrency(Math.abs(totalGain)) + ' (' + (totalGainPct >= 0 ? '+' : '') + totalGainPct + '%)';
+  badge.style.background = totalGain >= 0 ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+  badge.style.color       = totalGain >= 0 ? '#4ade80' : '#f87171';
+  badge.style.borderColor = totalGain >= 0 ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)';
+
+  // ── Holdings cards (group by name) ──
+  const grouped = {};
+  allInv.forEach(r => {
+    const key = r.name + '|' + r.type;
+    if(!grouped[key]) grouped[key] = { name: r.name, type: r.type, category: r.category, platform: r.platform, invested: 0, currentValue: 0, entries: 0 };
+    grouped[key].invested      += r.invested || 0;
+    grouped[key].currentValue  += r.currentValue || r.invested || 0;
+    grouped[key].entries++;
+  });
+
+  const grid = document.getElementById('inv-holdings-grid');
+  const groupedArr = Object.values(grouped);
+
+  if(!groupedArr.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted2);">
+      No investments yet. Click "+ Add Investment" to get started! 📈
+    </div>`;
+  } else {
+    grid.innerHTML = groupedArr.map(g => {
+      const gain    = g.currentValue - g.invested;
+      const gainPct = g.invested > 0 ? ((gain / g.invested) * 100).toFixed(2) : 0;
+      const progress = g.invested > 0 ? Math.min((g.currentValue / g.invested) * 50, 100) : 50;
+      const cfg  = INV_TYPE_CONFIG[g.type] || INV_TYPE_CONFIG.sip;
+      const isPos = gain >= 0;
+      return `<div class="inv-holding-card ${g.type}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+          <div>
+            <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${cfg.color};margin-bottom:3px;">${cfg.label}${g.category ? ' · ' + g.category : ''}</div>
+            <div style="font-weight:700;font-size:0.92rem;line-height:1.3;max-width:200px;">${g.name}</div>
+            ${g.platform ? `<div style="font-size:0.68rem;color:var(--muted2);">${g.platform}</div>` : ''}
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.62rem;color:var(--muted2);">Current Value</div>
+            <div style="font-size:1.2rem;font-weight:800;color:${isPos ? '#4ade80' : '#f87171'};">${fmtCurrency(g.currentValue)}</div>
+            <div style="font-size:0.72rem;font-weight:700;color:${isPos ? '#10b981' : '#ef4444'};">
+              ${isPos ? '▲' : '▼'} ${Math.abs(gainPct)}%
+            </div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px;">
+          <div style="background:var(--surface2);border-radius:7px;padding:6px 8px;">
+            <div style="font-size:0.58rem;color:var(--muted2);margin-bottom:2px;">Invested</div>
+            <div style="font-size:0.85rem;font-weight:700;color:#93c5fd;">${fmtCurrency(g.invested)}</div>
+          </div>
+          <div style="background:var(--surface2);border-radius:7px;padding:6px 8px;">
+            <div style="font-size:0.58rem;color:var(--muted2);margin-bottom:2px;">Gain / Loss</div>
+            <div style="font-size:0.85rem;font-weight:700;color:${isPos ? '#4ade80' : '#f87171'};">${isPos ? '+' : ''}${fmtCurrency(gain)}</div>
+          </div>
+        </div>
+        <div class="inv-progress-track">
+          <div class="inv-progress-fill" style="width:${progress}%;${isPos ? '' : 'background:linear-gradient(90deg,#ef4444,#f97316);'}"></div>
+        </div>
+        <div style="font-size:0.65rem;color:var(--muted2);margin-top:6px;">${g.entries} transaction${g.entries !== 1 ? 's' : ''}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── SIP Calculator init ──
+  calcSIP();
+
+  // ── Transactions table ──
+  const tb = document.getElementById('inv-tbody');
+  if(!rows.length) {
+    tb.innerHTML = `<tr><td colspan="11" class="empty-row">No transactions match. Try a different filter.</td></tr>`;
+    return;
+  }
+
+  let totalFilteredInvested = 0, totalFilteredCurrent = 0;
+
+  tb.innerHTML = rows.map(r => {
+    const cfg          = INV_TYPE_CONFIG[r.type] || INV_TYPE_CONFIG.sip;
+    const gain         = (r.currentValue || r.invested) - r.invested;
+    const gainPct      = r.invested > 0 ? ((gain / r.invested) * 100).toFixed(2) : 0;
+    const isPos        = gain >= 0;
+    totalFilteredInvested += r.invested || 0;
+    totalFilteredCurrent  += r.currentValue || r.invested || 0;
+    return `<tr>
+      <td>
+        <div style="font-size:0.68rem;color:var(--muted2);">${r.date ? r.date.slice(0,7) : ''}</div>
+        <div style="font-size:0.78rem;font-weight:600;">${r.date ? fmtDate(r.date) : '—'}</div>
+      </td>
+      <td><span class="badge" style="background:${cfg.bg};color:${cfg.color};">${cfg.label}</span></td>
+      <td>
+        <div style="font-weight:700;font-size:0.82rem;">${r.name}</div>
+        ${r.category ? `<div style="font-size:0.65rem;color:var(--muted2);">${r.category}</div>` : ''}
+        ${r.platform ? `<div style="font-size:0.65rem;color:var(--muted2);">🏦 ${r.platform}</div>` : ''}
+      </td>
+      <td style="font-size:0.8rem;">${r.units ? r.units.toFixed(3) : '—'}</td>
+      <td style="font-size:0.8rem;">${r.nav ? fmtCurrency(r.nav) : '—'}</td>
+      <td style="font-weight:700;color:#93c5fd;">${fmtCurrency(r.invested)}</td>
+      <td style="font-size:0.8rem;">${r.currentNav ? fmtCurrency(r.currentNav) : '—'}</td>
+      <td style="font-weight:700;color:${isPos ? '#4ade80' : '#f87171'};">${fmtCurrency(r.currentValue || r.invested)}</td>
+      <td style="font-weight:700;color:${isPos ? '#10b981' : '#ef4444'};">${isPos ? '+' : ''}${fmtCurrency(gain)}</td>
+      <td>
+        <span style="display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700;
+          background:${isPos ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'};
+          color:${isPos ? '#4ade80' : '#f87171'};">
+          ${isPos ? '▲' : '▼'} ${Math.abs(gainPct)}%
+        </span>
+      </td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-outline btn-sm" onclick="openInvModal(${r.id})" title="Edit">✏️</button>
+          <button class="btn btn-red btn-sm" onclick="deleteInvestment(${r.id})" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Summary footer row
+  const totalGainFiltered = totalFilteredCurrent - totalFilteredInvested;
+  const totalGainPctFiltered = totalFilteredInvested > 0
+    ? ((totalGainFiltered / totalFilteredInvested) * 100).toFixed(2) : 0;
+  const isPos = totalGainFiltered >= 0;
+
+  tb.innerHTML += `<tr style="background:var(--surface2);font-weight:800;font-size:0.82rem;">
+    <td colspan="4">${rows.length} transaction${rows.length !== 1 ? 's' : ''}</td>
+    <td>Total</td>
+    <td style="color:#93c5fd;">${fmtCurrency(totalFilteredInvested)}</td>
+    <td></td>
+    <td style="color:${isPos ? '#4ade80' : '#f87171'};">${fmtCurrency(totalFilteredCurrent)}</td>
+    <td style="color:${isPos ? '#10b981' : '#ef4444'};">${isPos ? '+' : ''}${fmtCurrency(totalGainFiltered)}</td>
+    <td>
+      <span style="background:${isPos ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'};
+        color:${isPos ? '#4ade80' : '#f87171'};padding:2px 8px;border-radius:10px;font-size:0.72rem;">
+        ${isPos ? '▲' : '▼'} ${Math.abs(totalGainPctFiltered)}%
+      </span>
+    </td>
+    <td></td>
+  </tr>`;
+}
+
+function exportInvestmentExcel() {
+  if(typeof XLSX === 'undefined') { showToast('❌ XLSX not loaded'); return; }
+  const rows = (db.investments || []).sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  const data = rows.map(r => {
+    const gain = (r.currentValue || r.invested) - r.invested;
+    const gainPct = r.invested > 0 ? ((gain / r.invested) * 100).toFixed(2) + '%' : '0%';
+    return {
+      Date: r.date || '',
+      Type: (INV_TYPE_CONFIG[r.type]||{label:r.type}).label,
+      'Fund/ETF Name': r.name || '',
+      Category: r.category || '',
+      Platform: r.platform || '',
+      Units: r.units || '',
+      'Buy NAV (₹)': r.nav || '',
+      'Invested (₹)': r.invested || 0,
+      'Current NAV (₹)': r.currentNav || '',
+      'Current Value (₹)': r.currentValue || r.invested || 0,
+      'Gain/Loss (₹)': gain,
+      'Returns (%)': gainPct,
+      'Folio No.': r.folio || '',
+      Notes: r.notes || '',
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(data);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Investments');
+  XLSX.writeFile(wb, 'my_investments.xlsx');
+  showToast('📤 Exported!');
+}
+
+// ═══════════════════════════════════════
+// COST PER DAY TRACKER
+// ═══════════════════════════════════════
+
+let editCPDId  = null;
+let currentCPDCat = 'electronics';
+
+const CPD_CAT_CONFIG = {
+  electronics:   { label:'📱 Electronics',   color:'#3b82f6',  bg:'rgba(59,130,246,0.12)',   topColor:'linear-gradient(90deg,#3b82f6,#8b5cf6)' },
+  clothing:      { label:'👕 Clothing',       color:'#ec4899',  bg:'rgba(236,72,153,0.12)',   topColor:'linear-gradient(90deg,#ec4899,#f43f5e)' },
+  appliance:     { label:'🏠 Appliance',      color:'#f59e0b',  bg:'rgba(245,158,11,0.12)',   topColor:'linear-gradient(90deg,#f59e0b,#fb923c)' },
+  vehicle:       { label:'🚗 Vehicle',        color:'#10b981',  bg:'rgba(16,185,129,0.12)',   topColor:'linear-gradient(90deg,#10b981,#06b6d4)' },
+  furniture:     { label:'🪑 Furniture',      color:'#78716c',  bg:'rgba(120,113,108,0.12)',  topColor:'linear-gradient(90deg,#78716c,#a8a29e)' },
+  health:        { label:'💊 Health',         color:'#e879f9',  bg:'rgba(232,121,249,0.12)',  topColor:'linear-gradient(90deg,#e879f9,#a855f7)' },
+  entertainment: { label:'🎮 Entertainment',  color:'#f97316',  bg:'rgba(249,115,22,0.12)',   topColor:'linear-gradient(90deg,#f97316,#eab308)' },
+  other:         { label:'📦 Other',          color:'#64748b',  bg:'rgba(100,116,139,0.12)',  topColor:'linear-gradient(90deg,#64748b,#94a3b8)' },
+};
+
+// Value score: <₹1/day=Excellent, <₹5=Good, <₹20=Fair, <₹50=Expensive, else=Very Expensive
+function getCPDScore(cpd) {
+  if(cpd <= 1)   return { label:'🟢 Excellent Value',  color:'#10b981', pct:95 };
+  if(cpd <= 5)   return { label:'🟩 Very Good',         color:'#34d399', pct:80 };
+  if(cpd <= 20)  return { label:'🟡 Good Value',        color:'#fbbf24', pct:60 };
+  if(cpd <= 50)  return { label:'🟠 Fair',              color:'#fb923c', pct:40 };
+  if(cpd <= 100) return { label:'🔴 Expensive',         color:'#f87171', pct:20 };
+  return           { label:'🔥 Very Expensive',         color:'#ef4444', pct:8  };
+}
+
+function daysSince(dateStr) {
+  if(!dateStr) return 0;
+  const diff = new Date() - new Date(dateStr);
+  return Math.max(1, Math.floor(diff / 86400000));
+}
+
+function setCPDCat(cat) {
+  currentCPDCat = cat;
+  document.getElementById('cpd_cat').value = cat;
+  document.querySelectorAll('#cpd-cat-btns .item-type-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+}
+
+function calcCPDPreview() {
+  const price = parseFloat(document.getElementById('cpd_price')?.value) || 0;
+  const date  = document.getElementById('cpd_date')?.value;
+  const life  = parseFloat(document.getElementById('cpd_life')?.value) || 0;
+  const prev  = document.getElementById('cpd-live-preview');
+  const grid  = document.getElementById('cpd-preview-grid');
+  const msg   = document.getElementById('cpd-value-msg');
+  if(!prev || !grid) return;
+
+  if(!price || !date) { prev.style.display = 'none'; return; }
+
+  const days  = daysSince(date);
+  const cpd   = price / days;           // cost per day (actual so far)
+  const cpm   = cpd * 30.44;            // per month
+  const cpw   = cpd * 7;                // per week
+  const cpy   = cpd * 365;              // per year
+  const score = getCPDScore(cpd);
+
+  // Life expectancy breakdown
+  const lifeRow = life > 0 ? `
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Life Cost/Day</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#a78bfa;">₹${(price / (life * 365)).toFixed(2)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Life Cost/Mo</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#a78bfa;">₹${(price / (life * 12)).toFixed(2)}</div>
+    </div>` : '';
+
+  prev.style.display = '';
+  grid.innerHTML = `
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Days Used</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#f0f0f0;">${days} days</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Cost / Day</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#4ade80;">₹${cpd.toFixed(2)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Cost / Week</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#fbbf24;">₹${cpw.toFixed(2)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Cost / Month</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#f87171;">₹${cpm.toFixed(2)}</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.04);border-radius:8px;padding:8px 10px;border:1px solid rgba(255,255,255,0.07);">
+      <div style="font-size:0.6rem;color:rgba(148,163,184,0.7);margin-bottom:3px;">Cost / Year</div>
+      <div style="font-size:0.95rem;font-weight:800;color:#93c5fd;">₹${cpy.toFixed(2)}</div>
+    </div>
+    ${lifeRow}`;
+
+  msg.textContent = score.label;
+  msg.style.background = score.color + '22';
+  msg.style.color = score.color;
+  msg.style.border = '1px solid ' + score.color + '44';
+}
+
+function openCPDModal(id = null) {
+  editCPDId = id;
+  document.getElementById('cpdModalTitle').textContent = id ? '✏️ Edit Item' : '🧾 Add Purchase Item';
+  const today = new Date().toISOString().slice(0, 10);
+
+  ['cpd_name','cpd_brand','cpd_shop','cpd_notes'].forEach(f => {
+    const el = document.getElementById(f); if(el) el.value = '';
+  });
+  document.getElementById('cpd_price').value = '';
+  document.getElementById('cpd_life').value  = '';
+  document.getElementById('cpd_date').value  = today;
+  document.getElementById('cpd-live-preview').style.display = 'none';
+  setCPDCat('electronics');
+
+  if(id) {
+    const r = (db.costItems || []).find(x => x.id === id);
+    if(r) {
+      setCPDCat(r.cat || 'electronics');
+      document.getElementById('cpd_name').value  = r.name  || '';
+      document.getElementById('cpd_brand').value = r.brand || '';
+      document.getElementById('cpd_date').value  = r.date  || today;
+      document.getElementById('cpd_price').value = r.price || '';
+      document.getElementById('cpd_life').value  = r.life  || '';
+      document.getElementById('cpd_shop').value  = r.shop  || '';
+      document.getElementById('cpd_notes').value = r.notes || '';
+      setTimeout(calcCPDPreview, 50);
+    }
+  }
+  document.getElementById('cpdModal').classList.add('open');
+}
+
+function closeCPDModal() {
+  document.getElementById('cpdModal').classList.remove('open');
+}
+
+function saveCPDItem() {
+  const name  = document.getElementById('cpd_name').value.trim();
+  const price = parseFloat(document.getElementById('cpd_price').value) || 0;
+  const date  = document.getElementById('cpd_date').value;
+
+  if(!name)  { showToast('❌ Item name required!'); return; }
+  if(!price) { showToast('❌ Price is required!');  return; }
+  if(!date)  { showToast('❌ Purchase date required!'); return; }
+
+  if(!db.costItems) db.costItems = [];
+
+  const entry = {
+    id:    editCPDId || nextId.cpd++,
+    cat:   document.getElementById('cpd_cat').value || 'electronics',
+    name,
+    brand: document.getElementById('cpd_brand').value.trim(),
+    date,
+    price,
+    life:  parseFloat(document.getElementById('cpd_life').value) || 0,
+    shop:  document.getElementById('cpd_shop').value.trim(),
+    notes: document.getElementById('cpd_notes').value.trim(),
+  };
+
+  if(editCPDId) {
+    const idx = db.costItems.findIndex(x => x.id === editCPDId);
+    if(idx !== -1) db.costItems[idx] = entry;
+  } else {
+    db.costItems.push(entry);
+  }
+
+  saveData();
+  closeCPDModal();
+  renderCostPerDay();
+  showToast('✅ Item saved!');
+}
+
+function deleteCPDItem(id) {
+  if(!confirm('Delete this item?')) return;
+  db.costItems = (db.costItems || []).filter(x => x.id !== id);
+  saveData();
+  renderCostPerDay();
+  showToast('🗑️ Deleted!');
+}
+
+function renderCostPerDay() {
+  if(!db.costItems) db.costItems = [];
+
+  const search  = (document.getElementById('cpd-search')?.value    || '').toLowerCase();
+  const catF    =  document.getElementById('cpd-cat-filter')?.value || '';
+  const sortBy  =  document.getElementById('cpd-sort')?.value       || 'date-desc';
+
+  let rows = db.costItems.filter(r => {
+    if(catF && r.cat !== catF) return false;
+    if(search) {
+      const hay = [r.name, r.brand, r.shop, r.notes, r.cat].join(' ').toLowerCase();
+      if(!hay.includes(search)) return false;
+    }
+    return true;
+  });
+
+  // Enrich with computed fields
+  const today = new Date();
+  rows = rows.map(r => {
+    const days  = daysSince(r.date);
+    const cpd   = r.price / days;
+    const cpm   = cpd * 30.44;
+    const cpw   = cpd * 7;
+    const cpy   = cpd * 365;
+    const score = getCPDScore(cpd);
+    return { ...r, days, cpd, cpm, cpw, cpy, score };
+  });
+
+  // Sort
+  rows.sort((a, b) => {
+    if(sortBy === 'date-desc')  return (b.date || '').localeCompare(a.date || '');
+    if(sortBy === 'date-asc')   return (a.date || '').localeCompare(b.date || '');
+    if(sortBy === 'cpd-asc')    return a.cpd - b.cpd;
+    if(sortBy === 'cpd-desc')   return b.cpd - a.cpd;
+    if(sortBy === 'price-desc') return b.price - a.price;
+    return 0;
+  });
+
+  // ── Summary hero ──
+  const totalItems = db.costItems.length;
+  const totalSpent = db.costItems.reduce((s, r) => s + (r.price || 0), 0);
+  const allCpd     = db.costItems.map(r => r.price / daysSince(r.date));
+  const avgCpd     = allCpd.length ? allCpd.reduce((s,v) => s+v, 0) / allCpd.length : 0;
+
+  document.getElementById('cpd-total-items').textContent = totalItems;
+  document.getElementById('cpd-total-spent').textContent = fmtCurrency(totalSpent);
+  document.getElementById('cpd-avg-day').textContent     = '₹' + avgCpd.toFixed(2);
+  document.getElementById('cpd-avg-month').textContent   = '₹' + (avgCpd * 30.44).toFixed(0);
+
+  // ── Cards grid ──
+  const grid = document.getElementById('cpd-cards-grid');
+  if(!rows.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:var(--muted2);">
+      <div style="font-size:2.5rem;margin-bottom:12px;">🧾</div>
+      <div style="font-size:0.9rem;font-weight:600;">Koi item nahi mila.</div>
+      <div style="font-size:0.75rem;margin-top:4px;">Click "+ Add Item" se shuru karo!</div>
+    </div>`;
+  } else {
+    grid.innerHTML = rows.map(r => {
+      const cfg  = CPD_CAT_CONFIG[r.cat] || CPD_CAT_CONFIG.other;
+      const lifeRow = r.life > 0 ? `
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);font-size:0.68rem;color:var(--muted2);display:flex;gap:12px;">
+          <span>📅 Expected life: <b style="color:var(--muted);">${r.life} yr${r.life > 1 ? 's' : ''}</b></span>
+          <span>Life/day: <b style="color:#a78bfa;">₹${(r.price / (r.life * 365)).toFixed(2)}</b></span>
+        </div>` : '';
+
+      // Progress ring: how far into expected life
+      const lifePct = r.life > 0 ? Math.min((r.days / (r.life * 365)) * 100, 100).toFixed(0) : null;
+
+      return `<div class="cpd-card">
+        <div class="cpd-card-top-bar" style="background:${cfg.topColor};"></div>
+
+        <!-- Header -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+          <div style="flex:1;">
+            <div style="font-size:0.6rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:${cfg.color};margin-bottom:3px;">${cfg.label}</div>
+            <div style="font-weight:800;font-size:1rem;line-height:1.3;">${r.name}</div>
+            ${r.brand ? `<div style="font-size:0.7rem;color:var(--muted2);">${r.brand}</div>` : ''}
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:10px;">
+            <div style="font-size:0.6rem;color:var(--muted2);">Paid</div>
+            <div style="font-size:1.1rem;font-weight:800;color:#93c5fd;">${fmtCurrency(r.price)}</div>
+            <div style="font-size:0.65rem;color:var(--muted2);">${r.days} days ago</div>
+          </div>
+        </div>
+
+        <!-- Main cost breakdown grid -->
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:10px;">
+          <div style="background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);border-radius:9px;padding:8px 10px;text-align:center;">
+            <div style="font-size:0.55rem;color:rgba(74,222,128,0.7);text-transform:uppercase;margin-bottom:2px;">Per Day</div>
+            <div style="font-size:1.2rem;font-weight:900;color:#4ade80;">₹${r.cpd < 1 ? r.cpd.toFixed(3) : r.cpd.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);border-radius:9px;padding:8px 10px;text-align:center;">
+            <div style="font-size:0.55rem;color:rgba(251,191,36,0.7);text-transform:uppercase;margin-bottom:2px;">Per Week</div>
+            <div style="font-size:1.2rem;font-weight:900;color:#fbbf24;">₹${r.cpw.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.2);border-radius:9px;padding:8px 10px;text-align:center;">
+            <div style="font-size:0.55rem;color:rgba(248,113,113,0.7);text-transform:uppercase;margin-bottom:2px;">Per Month</div>
+            <div style="font-size:1.2rem;font-weight:900;color:#f87171;">₹${r.cpm.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(147,197,253,0.08);border:1px solid rgba(147,197,253,0.2);border-radius:9px;padding:8px 10px;text-align:center;">
+            <div style="font-size:0.55rem;color:rgba(147,197,253,0.7);text-transform:uppercase;margin-bottom:2px;">Per Year</div>
+            <div style="font-size:1.2rem;font-weight:900;color:#93c5fd;">₹${r.cpy.toFixed(0)}</div>
+          </div>
+        </div>
+
+        <!-- Value Score -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span class="cpd-cost-pill" style="background:${r.score.color}18;color:${r.score.color};border:1px solid ${r.score.color}33;">${r.score.label}</span>
+          ${r.shop ? `<span style="font-size:0.65rem;color:var(--muted2);">🏬 ${r.shop}</span>` : ''}
+        </div>
+        <div class="cpd-score-bar-track">
+          <div class="cpd-score-bar-fill" style="width:${r.score.pct}%;background:${r.score.color};"></div>
+        </div>
+
+        ${lifePct !== null ? `
+        <div style="margin-top:8px;font-size:0.65rem;color:var(--muted2);display:flex;justify-content:space-between;">
+          <span>⏳ Life used: <b style="color:${lifePct > 80 ? '#f87171' : '#fbbf24'};">${lifePct}%</b></span>
+          <span>Remaining: <b>${Math.max(0, Math.floor(r.life * 365 - r.days))} days</b></span>
+        </div>` : ''}
+
+        ${lifeRow}
+
+        <!-- Purchase info + actions -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:8px;border-top:1px solid var(--border);">
+          <div style="font-size:0.65rem;color:var(--muted2);">
+            📅 ${r.date ? fmtDate(r.date) : '—'}
+            ${r.notes ? `<br>📝 ${r.notes}` : ''}
+          </div>
+          <div style="display:flex;gap:5px;">
+            <button class="btn btn-outline btn-sm" onclick="openCPDModal(${r.id})" title="Edit">✏️</button>
+            <button class="btn btn-red btn-sm" onclick="deleteCPDItem(${r.id})" title="Delete">🗑️</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Table view ──
+  const tb = document.getElementById('cpd-tbody');
+  if(!tb) return;
+  if(!rows.length) {
+    tb.innerHTML = `<tr><td colspan="11" class="empty-row">No items found.</td></tr>`;
+    return;
+  }
+  tb.innerHTML = rows.map(r => {
+    const cfg = CPD_CAT_CONFIG[r.cat] || CPD_CAT_CONFIG.other;
+    return `<tr>
+      <td>
+        <div style="font-weight:700;">${r.name}</div>
+        ${r.brand ? `<div style="font-size:0.65rem;color:var(--muted2);">${r.brand}</div>` : ''}
+      </td>
+      <td><span class="badge" style="background:${cfg.bg};color:${cfg.color};">${cfg.label}</span></td>
+      <td style="font-size:0.78rem;">${r.date ? fmtDate(r.date) : '—'}</td>
+      <td style="font-weight:700;color:#93c5fd;">${fmtCurrency(r.price)}</td>
+      <td style="font-weight:700;">${r.days}d</td>
+      <td style="font-weight:800;color:#4ade80;">₹${r.cpd < 1 ? r.cpd.toFixed(3) : r.cpd.toFixed(2)}</td>
+      <td style="color:#fbbf24;">₹${r.cpw.toFixed(2)}</td>
+      <td style="color:#f87171;">₹${r.cpm.toFixed(2)}</td>
+      <td style="color:#93c5fd;">₹${r.cpy.toFixed(0)}</td>
+      <td>
+        <span class="cpd-cost-pill" style="background:${r.score.color}18;color:${r.score.color};border:1px solid ${r.score.color}33;font-size:0.65rem;">
+          ${r.score.label}
+        </span>
+      </td>
+      <td>
+        <div style="display:flex;gap:4px;">
+          <button class="btn btn-outline btn-sm" onclick="openCPDModal(${r.id})">✏️</button>
+          <button class="btn btn-red btn-sm" onclick="deleteCPDItem(${r.id})">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function exportCPDExcel() {
+  if(typeof XLSX === 'undefined') { showToast('❌ XLSX not loaded'); return; }
+  const rows = (db.costItems || []).map(r => {
+    const days = daysSince(r.date);
+    const cpd  = r.price / days;
+    return {
+      'Item Name':      r.name || '',
+      'Brand':          r.brand || '',
+      'Category':       (CPD_CAT_CONFIG[r.cat]||{label:r.cat}).label,
+      'Purchase Date':  r.date || '',
+      'Price (₹)':      r.price || 0,
+      'Days Used':      days,
+      'Cost/Day (₹)':   cpd.toFixed(2),
+      'Cost/Week (₹)':  (cpd * 7).toFixed(2),
+      'Cost/Month (₹)': (cpd * 30.44).toFixed(2),
+      'Cost/Year (₹)':  (cpd * 365).toFixed(0),
+      'Exp.Life (yrs)': r.life || '',
+      'Shop':           r.shop || '',
+      'Notes':          r.notes || '',
+    };
+  });
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Cost Per Day');
+  XLSX.writeFile(wb, 'cost_per_day_tracker.xlsx');
+  showToast('📤 Exported!');
 }
 
 // ═══════════════════════════════════════
@@ -5469,7 +6825,10 @@ async function initApp() {
     // Apply Firebase data to db and nextId
     if(window._firebase_db) {
       db = {...db, ...window._firebase_db};
-      if(!db.recycleBin) db.recycleBin = [];
+      if(!db.recycleBin)  db.recycleBin  = [];
+      if(!db.shopping)    db.shopping    = [];
+      if(!db.investments) db.investments = [];
+      if(!db.costItems)   db.costItems   = [];
       window.db = db;
     }
     if(window._firebase_nextId) {
